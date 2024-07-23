@@ -132,7 +132,7 @@ def format_analysis_text(text):
     for line in lines:
         if line.strip():
             formatted_lines.append(f"<p>{line.strip()}</p>")
-    return '\n.join(formatted_lines)
+    return '\n'.join(formatted_lines)
 
 def chat_with_openai(user_input, df):
     category_totals = df.groupby('Categoria')['Valor'].sum().to_dict()
