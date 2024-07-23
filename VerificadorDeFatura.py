@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-import fitz  # PyMuPDF
+import pdfplumber
 import openai
 import re
 import matplotlib.pyplot as plt
@@ -10,11 +10,10 @@ openai.api_key = 'sk-xxxx'
 
 @st.cache_data
 def extract_text_from_pdf(pdf_file):
-    pdf_document = fitz.Document(stream=pdf_file.read(), filetype="pdf")
     text = ""
-    for page_num in range(len(pdf_document)):
-        page = pdf_document.load_page(page_num)
-        text += page.get_text()
+    with pdfplumber.open(pdf_file) as pdf:
+        for page in pdf.pages:
+            text += page.extract_text()
     return text
 
 def parse_transactions(text):
@@ -61,9 +60,8 @@ def categorize_transactions(transactions):
         'Livraria': ['LeituraAbc'],
         'Acessorios Masculinos': ['TON TJ ACESSOR'],
         'Moradia': ['ALUGUEL QUINTOANDAR', 'QUINTOANDAR'],
-        'Jiujitsu': ['ALLIANCE'],
-        'Academia/Gym': ['ITALY A ACAD*PAC CENTR'],
-        'Hospedagem': ['Hotel', 'HOTEL'],
+        'Academia/Gym/Jiujitsu': ['ALLIANCE SAO CAETANO', 'ITALY A ACAD*PAC CENTR'],
+        'Hospedagem': ['E-2478772-HOTEL GU06/06', 'Hotel', 'HOTEL'],
         # Adicione mais categorias e padrões conforme necessário
     }
     for transaction in transactions:
