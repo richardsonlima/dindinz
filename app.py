@@ -22,7 +22,7 @@ st_lottie(lottie_invest, height=200, key="invest")
 def load_verificador_de_fatura():
     try:
         module = import_module("VerificadorDeFatura")
-        app = module.VerificadorDeFaturaApp()
+        app = module.main()
         app.run()
     except Exception as e:
         st.error(f"Erro ao carregar Verificador de Fatura: {e}")
