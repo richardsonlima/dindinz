@@ -155,7 +155,8 @@ def chat_with_openai(user_input, df):
     return response['choices'][0]['message']['content']
 
 def main():
-    st.set_page_config(page_title="Análise de Faturas", page_icon="💳", layout="wide")
+    #st.set_page_config(page_title="Análise de Faturas", page_icon="💳", layout="wide")
+    st.title("Análise de Faturas", page_icon="💳", layout="wide")
 
     st.markdown("""
     <style>
