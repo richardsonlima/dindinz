@@ -8,3 +8,4 @@ streamlit-lottie
 fitz
 frontend
 tools
+matplotlib
