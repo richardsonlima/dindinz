@@ -1,5 +1,11 @@
 # Guru dos Dinheirinhos 💰
 
+
+
+
+
+# Aplicativo 01: Simulador do Investidor
+
 Este é um aplicativo desenvolvido em Streamlit que auxilia na jornada de investimentos, permitindo a simulação de aportes iniciais e mensais em diferentes tipos de investimentos, como Poupança, CDI, Tesouro Direto, LCI, LCA, Previdência Privada e Carteiras de Ações.
 
 ## Funcionalidades
@@ -94,6 +100,89 @@ streamlit-lottie
 - **Funções de Exibição**:
   - `exibir_texto_longo(texto, max_length=1000)`: Exibe textos longos em múltiplos blocos.
   - `st_lottie`: Exibe animações Lottie na interface Streamlit.
+
+
+# Aplicativo 01: 
+
+# Análise de Faturas de Cartão de Crédito
+
+Esta aplicação Streamlit permite a análise de faturas de cartão de crédito, extraindo e categorizando transações a partir de arquivos PDF. A aplicação utiliza a API do OpenAI para fornecer insights financeiros detalhados sobre os gastos do usuário.
+
+## Funcionalidades
+
+- **Upload de Arquivos PDF**: Carregue sua fatura de cartão de crédito em formato PDF.
+- **Extração de Texto**: Extração automática de texto a partir do PDF.
+- **Análise de Transações**: Identificação e categorização das transações.
+- **Gráfico de Despesas**: Visualização gráfica das despesas por categoria.
+- **Insights Financeiros**: Utilização da API do OpenAI para gerar insights financeiros detalhados.
+- **Interação com o Usuário**: Permite ao usuário fazer perguntas específicas sobre seus gastos.
+
+## Tecnologias Utilizadas
+
+- **Streamlit**: Framework para criação de aplicações web interativas em Python.
+- **pdfplumber**: Biblioteca para extração de texto de arquivos PDF.
+- **OpenAI**: API do OpenAI para geração de insights financeiros.
+- **Pandas**: Biblioteca para manipulação e análise de dados.
+- **Matplotlib**: Biblioteca para criação de gráficos.
+
+## Instalação
+
+1. Clone o repositório:
+    ```bash
+    git clone https://github.com/seu-usuario/seu-repositorio.git
+    cd seu-repositorio
+    ```
+
+2. Crie e ative um ambiente virtual (opcional, mas recomendado):
+    ```bash
+    python -m venv venv
+    source venv/bin/activate  # Linux/Mac
+    .\venv\Scripts\activate  # Windows
+    ```
+
+3. Instale as dependências:
+
+    ```bash
+    streamlit
+    pdfplumber
+    openai
+    matplotlib
+    pandas
+    ```
+
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+4. Configure a chave da API do OpenAI:
+    - Obtenha sua chave da API do OpenAI em [OpenAI API](https://beta.openai.com/signup/).
+    - Substitua `'sk-xxxx'` no arquivo `app.py` pela sua chave da API.
+
+## Uso
+
+1. Execute a aplicação Streamlit:
+    ```bash
+    streamlit run app.py
+    ```
+
+2. No navegador, carregue sua fatura de cartão de crédito em formato PDF.
+
+3. A aplicação irá extrair e mostrar o texto do PDF, categorizar as transações, gerar gráficos e fornecer insights financeiros.
+
+## Configuração do Tema
+
+Para garantir que a aplicação use sempre o tema claro, a configuração do tema está definida diretamente no código `app.py`:
+
+```python
+st.set_page_config(
+    layout="wide",
+    page_icon="💳",
+    page_title="Análise de Faturas de Cartão de Crédito",
+    initial_sidebar_state="expanded",
+    theme={"base": "light"}
+)
+```
+
 
 ## Licença
 
