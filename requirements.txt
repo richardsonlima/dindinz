@@ -5,8 +5,7 @@ yfinance
 requests
 openai
 streamlit-lottie
-fitz
-pymupdf
+pdfplumber
 frontend
 tools
 matplotlib
