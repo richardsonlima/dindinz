@@ -60,8 +60,9 @@ def categorize_transactions(transactions):
         'Livraria': ['LeituraAbc'],
         'Acessorios Masculinos': ['TON TJ ACESSOR'],
         'Moradia': ['ALUGUEL QUINTOANDAR', 'QUINTOANDAR'],
-        'Academia/Gym/Jiujitsu': ['ALLIANCE SAO CAETANO', 'ITALY A ACAD*PAC CENTR'],
-        'Hospedagem': ['E-2478772-HOTEL GU06/06', 'Hotel', 'HOTEL'],
+        'Jiujitsu': ['ALLIANCE'],
+        'Academia/Gym': ['ITALY A ACAD*PAC CENTR'],
+        'Hospedagem': ['Hotel', 'HOTEL'],
         # Adicione mais categorias e padrões conforme necessário
     }
     for transaction in transactions:
