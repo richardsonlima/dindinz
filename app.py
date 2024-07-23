@@ -1,9 +1,21 @@
 import streamlit as st
 from importlib import import_module
+from streamlit_lottie import st_lottie
+import json
 
 # Configuração da página deve ser a primeira chamada
 st.set_page_config(page_title="Guru dos Dinheirinhos", page_icon="💰", layout="wide")
 
+# Função para carregar animações Lottie
+def load_lottiefile(filepath: str):
+    with open(filepath, "r") as f:
+        return json.load(f)
+    
+# Carregar animações Lottie
+lottie_invest = load_lottiefile("Animation-FinanceGuru-1721707438111.json")
+st_lottie(lottie_invest, height=200, key="invest")
+#lottie_invest = load_lottiefile("Lottie/Animation-FinanceGuru-1721707438111.json")
+    
 # Funções para carregar as aplicações
 def load_verificador_de_fatura():
     try:
