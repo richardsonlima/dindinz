@@ -5,7 +5,6 @@ import yfinance as yf
 import requests
 from requests.exceptions import RequestException
 import openai
-from streamlit_lottie import st_lottie
 import json
 
 class SimulacaoInvestidorApp:
@@ -13,12 +12,7 @@ class SimulacaoInvestidorApp:
     
         # Configurar a chave da API da OpenAI
         # openai.api_key = 'sk-xxx'  # Substitua pela sua chave da API
-        
-        # Função para carregar animações Lottie
-        def load_lottiefile(filepath: str):
-            with open(filepath, "r") as f:
-                return json.load(f)
-        
+                
         # Função para obter a taxa de rendimento da poupança e CDI a partir da API do Banco Central
         def obter_taxa_bacen(endpoint):
             url = f'https://api.bcb.gov.br/dados/serie/bcdata.sgs.{endpoint}/dados?formato=json'
@@ -112,16 +106,11 @@ class SimulacaoInvestidorApp:
         
             return taxas
         
-        # Carregar animações Lottie
-        lottie_invest = load_lottiefile("Animation-FinanceGuru-1721707438111.json")
-        #lottie_invest = load_lottiefile("Lottie/Animation-FinanceGuru-1721707438111.json")
-        
         # Configuração inicial do Streamlit
         # st.set_page_config(page_title="Jornada de Investimento", page_icon="💰", layout="wide")
         
         # Título e animação
         st.title('💰 Simulador do Investidor')
-        st_lottie(lottie_invest, height=200, key="invest")
         
         # Inputs do usuário com formatação após a entrada
         st.sidebar.header('Configurações de Investimento')
