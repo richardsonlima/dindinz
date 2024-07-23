@@ -10,10 +10,10 @@ openai.api_key = 'sk-xxxx'
 
 @st.cache_data
 def extract_text_from_pdf(pdf_file):
-    document = fitz.open(stream=pdf_file.read(), filetype="pdf")
+    pdf_document = fitz.Document(stream=pdf_file.read(), filetype="pdf")
     text = ""
-    for page_num in range(len(document)):
-        page = document.load_page(page_num)
+    for page_num in range(len(pdf_document)):
+        page = pdf_document.load_page(page_num)
         text += page.get_text()
     return text
 
@@ -30,7 +30,7 @@ def categorize_transactions(transactions):
         'Restaurante': ['TBB GESTAO DE RESTAURA'],
         'Cafeteria': ['STARBUCKS', 'Cafe', 'Cafeteria'],
         'Rotisserie': ['ROTISSERIE'],
-        'Cholocateria': ['CACAU SHOW'],
+        'Chocolateria': ['CACAU SHOW'],
         'Mercado': ['PAO DE ACUCAR', 'CARREFOUR', 'PAO DE ACUCAR', 'PALACIO'],
         'SuperMercado': ['PAO DE ACUCAR', 'CARREFOUR','PAO DE ACUCAR', 'PALACIO'],
         'HiperMercado': ['PAO DE ACUCAR', 'CARREFOUR', 'PAO DE ACUCAR', 'PALACIO'],
@@ -61,8 +61,9 @@ def categorize_transactions(transactions):
         'Livraria': ['LeituraAbc'],
         'Acessorios Masculinos': ['TON TJ ACESSOR'],
         'Moradia': ['ALUGUEL QUINTOANDAR', 'QUINTOANDAR'],
-        'Academia/Gym/Jiujitsu': ['ALLIANCE SAO CAETANO', 'ITALY A ACAD*PAC CENTR'],
-        'Hospedagem': ['E-2478772-HOTEL GU06/06', 'Hotel', 'HOTEL'],
+        'Jiujitsu': ['ALLIANCE'],
+        'Academia/Gym': ['ITALY A ACAD*PAC CENTR'],
+        'Hospedagem': ['Hotel', 'HOTEL'],
         # Adicione mais categorias e padrões conforme necessário
     }
     for transaction in transactions:
@@ -131,7 +132,7 @@ def format_analysis_text(text):
     for line in lines:
         if line.strip():
             formatted_lines.append(f"<p>{line.strip()}</p>")
-    return '\n'.join(formatted_lines)
+    return '\n.join(formatted_lines)
 
 def chat_with_openai(user_input, df):
     category_totals = df.groupby('Categoria')['Valor'].sum().to_dict()
@@ -155,8 +156,6 @@ def chat_with_openai(user_input, df):
     return response['choices'][0]['message']['content']
 
 def main():
-    #st.set_page_config(page_title="Análise de Faturas", page_icon="💳", layout="wide")
-
     st.markdown("""
     <style>
     .main {
@@ -194,7 +193,7 @@ def main():
     </style>
     """, unsafe_allow_html=True)
     
-    st.title("💳 Análise de Faturas de Cartão de Crédito")
+    st.title("💳 Análise de Fatura de Cartão de Crédito")
     
     uploaded_file = st.file_uploader("📁 Escolha um arquivo PDF", type="pdf")
     
@@ -223,7 +222,7 @@ def main():
         st.subheader("📊 Gráfico de Despesas por Categoria:")
         plot_expenses_by_category(df)
         
-        st.subheader("🧠 Análise do texto usando Inteligência Artificial (modelo: gpt-4o omini):")
+        st.subheader("🧠 Análise do texto usando Inteligência Artificial (modelo: gpt-4):")
         analysis = analyze_text_with_openai(df)
         formatted_analysis = format_analysis_text(analysis)
         st.markdown(formatted_analysis, unsafe_allow_html=True)
