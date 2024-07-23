@@ -219,7 +219,7 @@ def main():
         st.subheader("📊 Gráfico de Despesas por Categoria:")
         plot_expenses_by_category(df)
         
-        st.subheader("🧠 Análise do texto usando Inteligência Artificial (modelo: gpt-4):")
+        st.subheader("🧠 Insights financeiros via Inteligência Artificial (modelo: gpt-4o):")
         analysis = analyze_text_with_openai(df)
         formatted_analysis = format_analysis_text(analysis)
         st.markdown(formatted_analysis, unsafe_allow_html=True)
