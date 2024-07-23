@@ -4,13 +4,9 @@ import numpy as np
 import yfinance as yf
 import requests
 from requests.exceptions import RequestException
-import locale
 import openai
 from streamlit_lottie import st_lottie
 import json
-
-# Configurar localidade para pt_BR
-#locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
 
 # Configurar a chave da API da OpenAI
 # openai.api_key = 'sk-xxx'  # Substitua pela sua chave da API
@@ -49,8 +45,13 @@ def calcular_rendimento(valor_inicial, valor_mensal, taxa_anual, anos=30):
 def obter_rendimento_acoes(tickers):
     retornos_anuais = {}
     for ticker in tickers:
-        dados = yf.Ticker(f"{ticker}.SA").history(period="1y")["Close"].pct_change().sum()
-        retornos_anuais[ticker] = dados
+        acao = yf.Ticker(f"{ticker}.SA")
+        dados = acao.history(period="1y")
+        if dados.empty:
+            retornos_anuais[ticker] = 0
+        else:
+            retorno_anual = dados['Close'].pct_change().mean() * 252  # 252 é o número de dias de negociação em um ano
+            retornos_anuais[ticker] = retorno_anual
     return retornos_anuais
 
 # Função para obter informações atualizadas dos tickers das ações
@@ -61,7 +62,7 @@ def obter_info_acoes(tickers):
         info_acoes[ticker] = {
             'Nome': acao.info.get('longName', 'N/A'),
             'Setor': acao.info.get('sector', 'N/A'),
-            'Rendimento Anual (%)': acao.history(period="1y")["Close"].pct_change().sum() * 100
+            'Rendimento Anual (%)': acao.history(period="1y")["Close"].pct_change().mean() * 252 * 100
         }
     return info_acoes
 
@@ -109,7 +110,7 @@ def obter_taxas():
     return taxas
 
 # Carregar animações Lottie
-lottie_invest = load_lottiefile("Animation-FinanceGuru-1721707438111.json")
+lottie_invest = load_lottiefile("Lottie/Animation-FinanceGuru-1721707438111.json")
 
 # Configuração inicial do Streamlit
 st.set_page_config(page_title="Jornada de Investimento", page_icon="💰", layout="wide")
@@ -124,10 +125,8 @@ valor_inicial = st.sidebar.number_input('Valor de Aporte Inicial', min_value=0.0
 valor_mensal = st.sidebar.number_input('Valor de Aplicação Mensal', min_value=0.0, value=0.0, step=100.0, format="%0.2f")
 
 # Formatando valores para exibição com símbolo de moeda no início
-#valor_inicial_formatado = f"R$ {locale.format_string('%.2f', valor_inicial, grouping=True)}"
-#valor_mensal_formatado = f"R$ {locale.format_string('%.2f', valor_mensal, grouping=True)}"
-valor_inicial_formatado = f"R$ {f('%.2f', valor_inicial, grouping=True)}"
-valor_mensal_formatado = f"R$ {f('%.2f', valor_mensal, grouping=True)}"
+valor_inicial_formatado = f"R$ {valor_inicial:,.2f}"
+valor_mensal_formatado = f"R$ {valor_mensal:,.2f}"
 
 st.sidebar.write(f"Valor de Aporte Inicial: {valor_inicial_formatado}")
 st.sidebar.write(f"Valor de Aplicação Mensal: {valor_mensal_formatado}")
