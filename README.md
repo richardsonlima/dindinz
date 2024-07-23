@@ -102,9 +102,7 @@ streamlit-lottie
   - `st_lottie`: Exibe animações Lottie na interface Streamlit.
 
 
-# Aplicativo 01: 
-
-# Análise de Faturas de Cartão de Crédito
+# Aplicativo 02:  Análise de Faturas de Cartão de Crédito
 
 Esta aplicação Streamlit permite a análise de faturas de cartão de crédito, extraindo e categorizando transações a partir de arquivos PDF. A aplicação utiliza a API do OpenAI para fornecer insights financeiros detalhados sobre os gastos do usuário.
 
