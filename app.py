@@ -2,7 +2,7 @@ import streamlit as st
 from importlib import import_module
 from streamlit_lottie import st_lottie
 import json
-from VerificadorDeFatura import VerificadorDeFaturaApp
+from VerificadorDeFatura import main
 from SimulacaoInvestidor import SimulacaoInvestidorApp
 
 # Configuração da página deve ser a primeira chamada
