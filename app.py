@@ -54,8 +54,8 @@ st.write(f"Debug: Menu selecionado: {menu}")
 if menu == "Home":
     st.title("Bem-vindo ao aplicativo financeiro!")
 elif menu == "Verificador de Fatura":
-    st.write("Debug: Chamando a função verificar_fatura.")
+    st.write("Debug: Chamando a função load_verificador_de_fatura.")
     load_verificador_de_fatura()
 elif menu == "Simulação de Investidor":
-    st.write("Debug: Chamando a função simulacao_investidor.")
+    st.write("Debug: Chamando a função load_simulacao_investidor.")
     load_simulacao_investidor()
