@@ -17,7 +17,7 @@ def load_lottiefile(filepath: str):
 lottie_invest = load_lottiefile("Animation-FinanceGuru-1721707438111.json")
 st_lottie(lottie_invest, height=200, key="invest")
 #lottie_invest = load_lottiefile("Lottie/Animation-FinanceGuru-1721707438111.json")
-    
+
 # Funções para carregar as aplicações
 def load_verificador_de_fatura():
     try:
@@ -51,11 +51,20 @@ menu = st.sidebar.selectbox("Menu", ["Home", "Verificador de Fatura", "Simulaç�
 
 st.write(f"Debug: Menu selecionado: {menu}")
 
+# if menu == "Home":
+#     st.title("Bem-vindo ao aplicativo financeiro!")
+# elif menu == "Verificador de Fatura":
+#     st.write("Debug: Chamando a função load_verificador_de_fatura.")
+#     load_verificador_de_fatura()
+# elif menu == "Simulação de Investidor":
+#     st.write("Debug: Chamando a função load_simulacao_investidor.")
+#     load_simulacao_investidor()
+
 if menu == "Home":
     st.title("Bem-vindo ao aplicativo financeiro!")
 elif menu == "Verificador de Fatura":
-    st.write("Debug: Chamando a função load_verificador_de_fatura.")
+    from VerificadorDeFatura import VerificadorDeFaturaApp
     load_verificador_de_fatura()
 elif menu == "Simulação de Investidor":
-    st.write("Debug: Chamando a função load_simulacao_investidor.")
+    from SimulacaoInvestidor import SimulacaoInvestidorApp
     load_simulacao_investidor()
