@@ -5,3 +5,4 @@ yfinance
 requests
 openai
 streamlit-lottie
+fitz
