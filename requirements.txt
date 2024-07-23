@@ -6,6 +6,7 @@ requests
 openai
 streamlit-lottie
 fitz
+pymupdf
 frontend
 tools
 matplotlib
