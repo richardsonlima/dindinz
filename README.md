@@ -62,7 +62,7 @@ Este é um aplicativo desenvolvido em Streamlit que auxilia na jornada de invest
 ## Arquitetura do Projeto
 
 - `app.py`: Código principal da aplicação Streamlit.
-- `Lottie/`: Pasta contendo animações Lottie.
+- `Animation-FinanceGuru-1721707438111.json`: Arquivo Json contendo animações Lottie.
 - `requirements.txt`: Lista de dependências do projeto.
 
 ## Dependências
