@@ -35,33 +35,34 @@ def load_simulacao_investidor():
     except Exception as e:
         st.error(f"Erro ao carregar Simulação de Investidor: {e}")
 
-# # Menu lateral para seleção das aplicações
-# st.sidebar.title("Menu")
-# app_choice = st.sidebar.radio("Selecione a Aplicação", ("Verificador de Fatura", "Simulação de Investidor"))
-
-# # Carregar a aplicação selecionada
-# if app_choice == "Verificador de Fatura":
-#     load_verificador_de_fatura()
-# elif app_choice == "Simulação de Investidor":
-#     load_simulacao_investidor()
-
-
 # Menu lateral
 menu = st.sidebar.selectbox("Menu", ["Home", "Verificador de Fatura", "Simulação de Investidor"])
 
 st.write(f"Menu selecionado: {menu}")
 
-# if menu == "Home":
-#     st.title("Bem-vindo ao aplicativo financeiro!")
-# elif menu == "Verificador de Fatura":
-#     st.write("Debug: Chamando a função load_verificador_de_fatura.")
-#     load_verificador_de_fatura()
-# elif menu == "Simulação de Investidor":
-#     st.write("Debug: Chamando a função load_simulacao_investidor.")
-#     load_simulacao_investidor()
-
 if menu == "Home":
-    st.title("Bem-vindo ao aplicativo financeiro!")
+    st.title("Bem-vindo ao Guru dos Dinheirinhos!")
+    st.write("""
+    O **Guru dos Dinheirinhos** é a sua plataforma completa para gerenciar suas finanças pessoais e planejar seus investimentos de forma inteligente. Temos duas aplicações poderosas para ajudá-lo a atingir seus objetivos financeiros:
+    
+    #### 1. Verificador de Fatura
+    **Verificador de Fatura** é uma ferramenta essencial para controlar suas despesas com cartão de crédito. Com esta aplicação, você pode:
+    - Analisar suas faturas de cartão de crédito.
+    - Identificar padrões de gastos e possíveis economias.
+    - Manter-se informado sobre seu consumo mensal para evitar surpresas desagradáveis.
+    
+    #### 2. Simulação de Investidor
+    **Simulação de Investidor** é a aplicação ideal para quem deseja planejar seus investimentos a longo prazo. Com esta ferramenta, você pode:
+    - Simular diferentes cenários de investimento.
+    - Comparar opções de rentabilidade, como Poupança, CDI e uma carteira diversificada de ações.
+    - Visualizar seu crescimento financeiro ao longo dos anos e planejar sua jornada rumo ao primeiro milhão de reais.
+    
+    ---
+    
+    Sinta-se à vontade para explorar cada aplicação através do menu lateral. Estamos aqui para ajudar você a alcançar a liberdade financeira e a tomar decisões mais informadas sobre suas finanças pessoais.
+    
+    Se tiver alguma dúvida ou precisar de assistência, não hesite em nos contatar. Aproveite ao máximo o Guru dos Dinheirinhos!
+    """)
 elif menu == "Verificador de Fatura":
     from VerificadorDeFatura import main
     load_verificador_de_fatura()
