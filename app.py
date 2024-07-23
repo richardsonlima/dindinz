@@ -10,7 +10,7 @@ from streamlit_lottie import st_lottie
 import json
 
 # Configurar localidade para pt_BR
-locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
+#locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
 
 # Configurar a chave da API da OpenAI
 # openai.api_key = 'sk-xxx'  # Substitua pela sua chave da API
@@ -124,8 +124,10 @@ valor_inicial = st.sidebar.number_input('Valor de Aporte Inicial', min_value=0.0
 valor_mensal = st.sidebar.number_input('Valor de Aplicação Mensal', min_value=0.0, value=0.0, step=100.0, format="%0.2f")
 
 # Formatando valores para exibição com símbolo de moeda no início
-valor_inicial_formatado = f"R$ {locale.format_string('%.2f', valor_inicial, grouping=True)}"
-valor_mensal_formatado = f"R$ {locale.format_string('%.2f', valor_mensal, grouping=True)}"
+#valor_inicial_formatado = f"R$ {locale.format_string('%.2f', valor_inicial, grouping=True)}"
+#valor_mensal_formatado = f"R$ {locale.format_string('%.2f', valor_mensal, grouping=True)}"
+valor_inicial_formatado = f"R$ {f('%.2f', valor_inicial, grouping=True)}"
+valor_mensal_formatado = f"R$ {f('%.2f', valor_mensal, grouping=True)}"
 
 st.sidebar.write(f"Valor de Aporte Inicial: {valor_inicial_formatado}")
 st.sidebar.write(f"Valor de Aplicação Mensal: {valor_mensal_formatado}")
