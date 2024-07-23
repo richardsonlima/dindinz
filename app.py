@@ -49,7 +49,7 @@ def load_simulacao_investidor():
 # Menu lateral
 menu = st.sidebar.selectbox("Menu", ["Home", "Verificador de Fatura", "Simulação de Investidor"])
 
-st.write(f"Debug: Menu selecionado: {menu}")
+st.write(f"Menu selecionado: {menu}")
 
 # if menu == "Home":
 #     st.title("Bem-vindo ao aplicativo financeiro!")
