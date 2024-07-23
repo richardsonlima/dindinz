@@ -69,6 +69,7 @@ Este é um aplicativo desenvolvido em Streamlit que auxilia na jornada de invest
 Coloque esse conteúdo em um arquivo chamado requirements.txt no diretório raiz do seu projeto. Isso garantirá que todas as dependências necessárias sejam 
 instaladas ao configurar o ambiente.
 
+```bash
 streamlit
 pandas
 numpy
@@ -76,6 +77,8 @@ yfinance
 requests
 openai
 streamlit-lottie
+```
+
 
 ## Estrutura do Código
 
