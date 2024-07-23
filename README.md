@@ -99,7 +99,7 @@ streamlit-lottie
 
 ## Licença
 
-Este projeto está licenciado sob a [MIT License](LICENSE).
+Este projeto está licenciado sob a [Apache-2.0 license](https://github.com/richardsonlima/guru-dos-dinheirinhos/tree/main?tab=Apache-2.0-1-ov-file#readme).
 
 ## Contribuições
 
