@@ -63,7 +63,7 @@ st.write(f"Debug: Menu selecionado: {menu}")
 if menu == "Home":
     st.title("Bem-vindo ao aplicativo financeiro!")
 elif menu == "Verificador de Fatura":
-    from VerificadorDeFatura import VerificadorDeFaturaApp
+    from VerificadorDeFatura import main
     load_verificador_de_fatura()
 elif menu == "Simulação de Investidor":
     from SimulacaoInvestidor import SimulacaoInvestidorApp
