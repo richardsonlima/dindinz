@@ -17,7 +17,6 @@ Este é um aplicativo desenvolvido em Streamlit que auxilia na jornada de invest
 - **NumPy**: Suporte para operações matemáticas e cálculos.
 - **YFinance**: Obtenção de dados financeiros de ações.
 - **Requests**: Acesso a APIs externas.
-- **Locale**: Formatação de valores monetários.
 - **OpenAI**: Integração com GPT-4 para geração de insights (comentado no código).
 - **Streamlit-Lottie**: Animações Lottie para uma interface mais amigável.
 
@@ -78,7 +77,6 @@ requests
 openai
 streamlit-lottie
 ```
-
 
 ## Estrutura do Código
 
