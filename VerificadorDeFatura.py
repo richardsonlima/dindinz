@@ -20,7 +20,7 @@ def extract_text_from_pdf(pdf_file):
 def parse_transactions(text):
     pattern = re.compile(r'(\d{2}/\d{2})\s+(.+?)\s+(\d{1,3}(?:\.\d{3})*,\d{2})')
     matches = pattern.findall(text)
-    transactions = [{'Data': match[0], 'Descrição': match[1], 'Valor': match[2].replace('.', '').replace(',', '.')} for match in matches]
+    transactions = [{'Data': match[0], 'Descrição': match[1], 'Valor': float(match[2].replace('.', '').replace(',', '.'))} for match in matches]
     return transactions
 
 def categorize_transactions(transactions):
@@ -193,7 +193,7 @@ def main():
     </style>
     """, unsafe_allow_html=True)
     
-    st.title("💳 Análise de Fatura de Cartão de Crédito")
+    st.title("💳 Análise de Faturas de Cartão de Crédito")
     
     uploaded_file = st.file_uploader("📁 Escolha um arquivo PDF", type="pdf")
     
@@ -209,7 +209,6 @@ def main():
         transactions = parse_transactions(text)
         transactions = categorize_transactions(transactions)
         df = pd.DataFrame(transactions)
-        df['Valor'] = df['Valor'].astype(float)
         st.dataframe(df.style.format({"Valor": "R$ {:.2f}"}))
 
         st.subheader("📊 Totais gastos por categoria:")
