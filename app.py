@@ -110,7 +110,8 @@ def obter_taxas():
     return taxas
 
 # Carregar animações Lottie
-lottie_invest = load_lottiefile("Lottie/Animation-FinanceGuru-1721707438111.json")
+#lottie_invest = load_lottiefile("Lottie/Animation-FinanceGuru-1721707438111.json")
+lottie_invest = load_lottiefile("Animation-FinanceGuru-1721707438111.json")
 
 # Configuração inicial do Streamlit
 st.set_page_config(page_title="Jornada de Investimento", page_icon="💰", layout="wide")
