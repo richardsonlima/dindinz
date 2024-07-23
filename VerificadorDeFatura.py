@@ -158,7 +158,7 @@ class VerificadorDeFaturaApp:
             return response['choices'][0]['message']['content']
         
         def page_layout():
-            # st.set_page_config(page_title="Análise de Faturas", page_icon="💳", layout="wide")
+            st.set_page_config(page_title="Análise de Faturas", page_icon="💳", layout="wide")
         
             st.markdown("""
             <style>
