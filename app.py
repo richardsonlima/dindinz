@@ -4,7 +4,7 @@ from streamlit_lottie import st_lottie
 import json
 
 # Configuração da página deve ser a primeira chamada
-st.set_page_config(page_title="Guru dos Dinheirinhos", page_icon="💰", layout="wide")
+st.set_page_config(page_title="DinDinZ", page_icon="💰", layout="wide")
 
 # Função para carregar animações Lottie
 def load_lottiefile(filepath: str):
@@ -51,9 +51,9 @@ st.sidebar.title("Menu")
 selection = st.sidebar.radio("Navegação", list(menu_options.keys()), format_func=lambda x: f"{menu_options[x]} {x}")
 
 if selection == "Home":
-    st.title("Bem-vindo ao Guru dos Dinheirinhos!")
+    st.title("Bem-vindo ao DinDinZ!")
     st.write("""
-    O **Guru dos Dinheirinhos** é a sua plataforma completa para gerenciar suas finanças pessoais e planejar seus investimentos de forma inteligente. Temos três aplicações poderosas para ajudá-lo a atingir seus objetivos financeiros:
+    O **DinDinZ** é a sua plataforma completa para gerenciar suas finanças pessoais e planejar seus investimentos de forma inteligente. Temos três aplicações poderosas para ajudá-lo a atingir seus objetivos financeiros:
     
     #### 1. Verificador de Fatura
     **Verificador de Fatura** é uma ferramenta essencial para controlar suas despesas com cartão de crédito. Com esta aplicação, você pode:
@@ -85,7 +85,7 @@ if selection == "Home":
     
     Sinta-se à vontade para explorar cada aplicação através do menu lateral. Estamos aqui para ajudar você a alcançar a liberdade financeira e a tomar decisões mais informadas sobre suas finanças pessoais.
     
-    Se tiver alguma dúvida ou precisar de assistência, não hesite em nos contatar. Aproveite ao máximo o Guru dos Dinheirinhos!
+    Criei o DinDinZ para uso e controle pessoal, mas se tiver alguma dúvida ou precisar entender algo me avise e não hesite em me contatar. Aproveite ao máximo o DinDinZ!
     """)
 elif selection == "Verificador de Fatura":
     load_app("VerificadorDeFatura")
