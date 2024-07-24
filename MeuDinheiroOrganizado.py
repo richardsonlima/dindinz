@@ -193,6 +193,159 @@ class MeuDinheiroOrganizadoApp:
             all_transactions.to_csv('dados_anuais.csv', index=False)
             st.sidebar.success('Dados anuais exportados como dados_anuais.csv')
 
+    def despesas_fixas(self):
+        st.title("Despesas Fixas")
+        st.dataframe(st.session_state['fixed_expenses'])
+
+        st.sidebar.header('Adicionar Despesa Fixa')
+        descricao = st.sidebar.text_input('Descrição')
+        valor = st.sidebar.number_input('Valor', min_value=0.0, format="%.2f")
+
+        if st.sidebar.button('Adicionar'):
+            new_expense = pd.DataFrame({'Descrição': [descricao], 'Valor': [valor]})
+            st.session_state['fixed_expenses'] = pd.concat([st.session_state['fixed_expenses'], new_expense], ignore_index=True)
+            st.sidebar.success('Despesa fixa adicionada!')
+
+    def despesas_variaveis(self):
+        st.title("Despesas Variáveis")
+        st.dataframe(st.session_state['variable_expenses'])
+
+        st.sidebar.header('Adicionar Despesa Variável')
+        descricao = st.sidebar.text_input('Descrição')
+        valor = st.sidebar.number_input('Valor', min_value=0.0, format="%.2f")
+
+        if st.sidebar.button('Adicionar'):
+            new_expense = pd.DataFrame({'Descrição': [descricao], 'Valor': [valor]})
+            st.session_state['variable_expenses'] = pd.concat([st.session_state['variable_expenses'], new_expense], ignore_index=True)
+            st.sidebar.success('Despesa variável adicionada!')
+
+    def faturas_cartoes(self):
+        st.title("Faturas de Cartões de Crédito")
+        st.dataframe(st.session_state['credit_card_bills'])
+
+        st.sidebar.header('Adicionar Fatura de Cartão')
+        cartao = st.sidebar.text_input('Cartão')
+        data_vencimento = st.sidebar.date_input('Data de Vencimento', datetime.today())
+        valor = st.sidebar.number_input('Valor', min_value=0.0, format="%.2f")
+
+        if st.sidebar.button('Adicionar'):
+            new_bill = pd.DataFrame({'Cartão': [cartao], 'Data de Vencimento': [data_vencimento], 'Valor': [valor]})
+            st.session_state['credit_card_bills'] = pd.concat([st.session_state['credit_card_bills'], new_bill], ignore_index=True)
+            st.sidebar.success('Fatura de cartão adicionada!')
+
+    def dividas(self):
+        st.title("Dívidas")
+        st.dataframe(st.session_state['debts'])
+
+        st.sidebar.header('Adicionar Dívida')
+        descricao = st.sidebar.text_input('Descrição')
+        valor = st.sidebar.number_input('Valor', min_value=0.0, format="%.2f")
+
+        if st.sidebar.button('Adicionar'):
+            new_debt = pd.DataFrame({'Descrição': [descricao], 'Valor': [valor]})
+            st.session_state['debts'] = pd.concat([st.session_state['debts'], new_debt], ignore_index=True)
+            st.sidebar.success('Dívida adicionada!')
+
+    def investimentos(self):
+        st.title("Investimentos")
+        st.dataframe(st.session_state['investments'])
+
+        st.sidebar.header('Adicionar Investimento')
+        descricao = st.sidebar.text_input('Descrição')
+        valor = st.sidebar.number_input('Valor', min_value=0.0, format="%.2f")
+
+        if st.sidebar.button('Adicionar'):
+            new_investment = pd.DataFrame({'Descrição': [descricao], 'Valor': [valor]})
+            st.session_state['investments'] = pd.concat([st.session_state['investments'], new_investment], ignore_index=True)
+            st.sidebar.success('Investimento adicionado!')
+
+    def limite_gastos(self):
+        st.title("Limite de Gastos por Categorias")
+        st.dataframe(st.session_state['spending_limits'])
+
+        st.sidebar.header('Adicionar Limite de Gastos')
+        categoria = st.sidebar.text_input('Categoria')
+        limite = st.sidebar.number_input('Limite', min_value=0.0, format="%.2f")
+
+        if st.sidebar.button('Adicionar'):
+            new_limit = pd.DataFrame({'Categoria': [categoria], 'Limite': [limite]})
+            st.session_state['spending_limits'] = pd.concat([st.session_state['spending_limits'], new_limit], ignore_index=True)
+            st.sidebar.success('Limite de gastos adicionado!')
+
+    def cartoes_credito(self):
+        st.title("Cartões de Crédito")
+        st.dataframe(st.session_state['credit_cards'])
+
+        st.sidebar.header('Adicionar Cartão de Crédito')
+        cartao = st.sidebar.text_input('Cartão')
+        limite = st.sidebar.number_input('Limite', min_value=0.0, format="%.2f")
+        data_vencimento = st.sidebar.date_input('Data de Vencimento', datetime.today())
+        imagem = st.sidebar.file_uploader("Imagem do Cartão", type=["png", "jpg", "jpeg"])
+
+        if st.sidebar.button('Adicionar'):
+            imagem_path = None
+            if imagem is not None:
+                imagem_path = f"images/{imagem.name}"
+                with open(imagem_path, "wb") as f:
+                    f.write(imagem.getbuffer())
+            new_card = pd.DataFrame({'Cartão': [cartao], 'Limite': [limite], 'Data de Vencimento': [data_vencimento], 'Imagem': [imagem_path]})
+            st.session_state['credit_cards'] = pd.concat([st.session_state['credit_cards'], new_card], ignore_index=True)
+            st.sidebar.success('Cartão de crédito adicionado!')
+
+    def lista_desejos(self):
+        st.title("Lista de Desejos")
+        st.dataframe(st.session_state['wishlist'])
+
+        st.sidebar.header('Adicionar Item à Lista de Desejos')
+        descricao = st.sidebar.text_input('Descrição')
+        categoria = st.sidebar.text_input('Categoria')
+        decisao = st.sidebar.selectbox('Decisão', ['Comprar', 'Esperar', 'Descartar'])
+
+        if st.sidebar.button('Adicionar'):
+            new_item = pd.DataFrame({'Descrição': [descricao], 'Categoria': [categoria], 'Decisão': [decisao]})
+            st.session_state['wishlist'] = pd.concat([st.session_state['wishlist'], new_item], ignore_index=True)
+            st.sidebar.success('Item adicionado à lista de desejos!')
+
+    def metas_financeiras(self):
+        st.title("Metas Financeiras")
+        st.dataframe(st.session_state['financial_goals'])
+
+        st.sidebar.header('Adicionar Meta Financeira')
+        descricao = st.sidebar.text_input('Descrição')
+        valor_necessario = st.sidebar.number_input('Valor Necessário', min_value=0.0, format="%.2f")
+        data = st.sidebar.date_input('Data de Conclusão', datetime.today())
+        imagem = st.sidebar.file_uploader("Imagem da Meta", type=["png", "jpg", "jpeg"])
+
+        if st.sidebar.button('Adicionar'):
+            imagem_path = None
+            if imagem is not None:
+                imagem_path = f"images/{imagem.name}"
+                with open(imagem_path, "wb") as f:
+                    f.write(imagem.getbuffer())
+            new_goal = pd.DataFrame({'Descrição': [descricao], 'Valor Necessário': [valor_necessario], 'Data': [data], 'Imagem': [imagem_path]})
+            st.session_state['financial_goals'] = pd.concat([st.session_state['financial_goals'], new_goal], ignore_index=True)
+            st.sidebar.success('Meta financeira adicionada!')
+
+    def mural_sonhos(self):
+        st.title("Mural dos Sonhos")
+        st.dataframe(st.session_state['mural_sonhos'])
+
+        st.sidebar.header('Adicionar Item ao Mural dos Sonhos')
+        descricao = st.sidebar.text_input('Descrição')
+        valor_necessario = st.sidebar.number_input('Valor Necessário', min_value=0.0, format="%.2f")
+        data = st.sidebar.date_input('Data de Conclusão', datetime.today())
+        imagem = st.sidebar.file_uploader("Imagem do Item", type=["png", "jpg", "jpeg"])
+
+        if st.sidebar.button('Adicionar'):
+            imagem_path = None
+            if imagem is not None:
+                imagem_path = f"images/{imagem.name}"
+                with open(imagem_path, "wb") as f:
+                    f.write(imagem.getbuffer())
+            new_item = pd.DataFrame({'Descrição': [descricao], 'Valor Necessário': [valor_necessario], 'Data': [data], 'Imagem': [imagem_path]})
+            st.session_state['mural_sonhos'] = pd.concat([st.session_state['mural_sonhos'], new_item], ignore_index=True)
+            st.sidebar.success('Item adicionado ao mural dos sonhos!')
+
 if __name__ == "__main__":
     app = MeuDinheiroOrganizadoApp()
     app.run()
