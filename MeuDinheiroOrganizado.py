@@ -169,7 +169,6 @@ class MeuDinheiroOrganizadoApp:
         if st.sidebar.button('Carregar Dados'):
             transactions = pd.read_csv('transacoes.csv')
             for _, row in transactions.iterrows():
-#
             month = pd.to_datetime(row['Data']).month
             new_transaction = pd.DataFrame({'Data': [row['Data']], 'Categoria': [row['Categoria']], 'Valor': [row['Valor']]})
             if month not in st.session_state['monthly_transactions']:
@@ -205,8 +204,6 @@ class MeuDinheiroOrganizadoApp:
         if st.sidebar.button('Exportar CSV'):
             all_transactions.to_csv('dados_anuais.csv', index=False)
             st.sidebar.success('Dados anuais exportados como dados_anuais.csv')
-
 if __name__ == "__main__":
 app = MeuDinheiroOrganizadoApp()
 app.run()
-
