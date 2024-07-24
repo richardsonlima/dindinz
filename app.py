@@ -4,6 +4,7 @@ from streamlit_lottie import st_lottie
 import json
 from VerificadorDeFatura import main
 from SimulacaoInvestidor import SimulacaoInvestidorApp
+from MeuDinheiroOrganizado import MeuDinheiroOrganizadoApp
 
 # Configuração da página deve ser a primeira chamada
 st.set_page_config(page_title="Guru dos Dinheirinhos", page_icon="💰", layout="wide")
@@ -12,11 +13,10 @@ st.set_page_config(page_title="Guru dos Dinheirinhos", page_icon="💰", layout=
 def load_lottiefile(filepath: str):
     with open(filepath, "r") as f:
         return json.load(f)
-    
+
 # Carregar animações Lottie
 lottie_invest = load_lottiefile("Animation-FinanceGuru-1721707438111.json")
 st_lottie(lottie_invest, height=200, key="invest")
-#lottie_invest = load_lottiefile("Lottie/Animation-FinanceGuru-1721707438111.json")
 
 # Funções para carregar as aplicações
 def load_verificador_de_fatura():
@@ -44,14 +44,12 @@ def load_meu_dinheiro_organizado():
         st.error(f"Erro ao carregar Meu Dinheiro Organizado: {e}")
 
 # Menu lateral
-menu = st.sidebar.selectbox("Menu", ["Home", "Verificador de Fatura", "Simulação de Investidor"])
-
-st.write(f"Menu selecionado: {menu}")
+menu = st.sidebar.selectbox("Menu", ["Home", "Verificador de Fatura", "Simulação de Investidor", "Meu Dinheiro Organizado"])
 
 if menu == "Home":
     st.title("Bem-vindo ao Guru dos Dinheirinhos!")
     st.write("""
-    O **Guru dos Dinheirinhos** é a sua plataforma completa para gerenciar suas finanças pessoais e planejar seus investimentos de forma inteligente. Temos duas aplicações poderosas para ajudá-lo a atingir seus objetivos financeiros:
+    O **Guru dos Dinheirinhos** é a sua plataforma completa para gerenciar suas finanças pessoais e planejar seus investimentos de forma inteligente. Temos três aplicações poderosas para ajudá-lo a atingir seus objetivos financeiros:
     
     #### 1. Verificador de Fatura
     **Verificador de Fatura** é uma ferramenta essencial para controlar suas despesas com cartão de crédito. Com esta aplicação, você pode:
@@ -86,11 +84,8 @@ if menu == "Home":
     Se tiver alguma dúvida ou precisar de assistência, não hesite em nos contatar. Aproveite ao máximo o Guru dos Dinheirinhos!
     """)
 elif menu == "Verificador de Fatura":
-    from VerificadorDeFatura import main
     load_verificador_de_fatura()
 elif menu == "Simulação de Investidor":
-    from SimulacaoInvestidor import SimulacaoInvestidorApp
     load_simulacao_investidor()
 elif menu == "Meu Dinheiro Organizado":
-    from MeuDinheiroOrganizado import MeuDinheiroOrganizadoApp
     load_meu_dinheiro_organizado()
