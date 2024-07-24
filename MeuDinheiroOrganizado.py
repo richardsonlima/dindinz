@@ -6,7 +6,6 @@ from datetime import datetime
 
 class MeuDinheiroOrganizadoApp:
     def run(self):
-        
         # Inicializar o estado da sessão para transações
         if 'transactions' not in st.session_state:
             st.session_state['transactions'] = pd.DataFrame(columns=['Data', 'Categoria', 'Valor'])
@@ -67,4 +66,3 @@ class MeuDinheiroOrganizadoApp:
 if __name__ == "__main__":
     app = MeuDinheiroOrganizadoApp()
     app.run()
-
