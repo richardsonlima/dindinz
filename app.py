@@ -2,9 +2,6 @@ import streamlit as st
 from importlib import import_module
 from streamlit_lottie import st_lottie
 import json
-from VerificadorDeFatura import main
-from SimulacaoInvestidor import SimulacaoInvestidorApp
-from MeuDinheiroOrganizado import MeuDinheiroOrganizadoApp
 
 # Configuração da página deve ser a primeira chamada
 st.set_page_config(page_title="Guru dos Dinheirinhos", page_icon="💰", layout="wide")
@@ -38,7 +35,7 @@ def load_simulacao_investidor():
 def load_meu_dinheiro_organizado():
     try:
         module = import_module("MeuDinheiroOrganizado")
-        app = module.MeuDinheiroOrganizadorApp()
+        app = module.MeuDinheiroOrganizadoApp()
         app.run()
     except Exception as e:
         st.error(f"Erro ao carregar Meu Dinheiro Organizado: {e}")
