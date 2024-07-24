@@ -6,24 +6,44 @@ from datetime import datetime
 
 class MeuDinheiroOrganizadoApp:
     def run(self):
-        # Inicializar o estado da sessão para transações mensais
+        # Inicializar o estado da sessão para transações mensais e categorias
         if 'monthly_transactions' not in st.session_state:
             st.session_state['monthly_transactions'] = {}
+        if 'categories' not in st.session_state:
+            st.session_state['categories'] = ['Entrada', 'Mercado', 'Aluguel', 'Utilidades', 'Lazer', 'Outros']
+
+        # Mapeamento de números para nomes dos meses
+        month_names = {
+            1: 'Janeiro', 2: 'Fevereiro', 3: 'Março', 4: 'Abril',
+            5: 'Maio', 6: 'Junho', 7: 'Julho', 8: 'Agosto',
+            9: 'Setembro', 10: 'Outubro', 11: 'Novembro', 12: 'Dezembro'
+        }
 
         # Barra lateral para entrada de dados
         st.sidebar.header('Adicionar Transação')
-        month = st.sidebar.selectbox('Mês', list(range(1, 13)))
+        month = st.sidebar.selectbox('Mês', list(month_names.values()))
         date = st.sidebar.date_input('Data', datetime.today())
-        category = st.sidebar.selectbox('Categoria', ['Entrada', 'Mercado', 'Aluguel', 'Utilidades', 'Lazer', 'Outros'])
+        category = st.sidebar.selectbox('Categoria', st.session_state['categories'])
         amount = st.sidebar.number_input('Valor', min_value=0.0, format="%.2f")
 
         if st.sidebar.button('Adicionar'):
+            month_num = list(month_names.keys())[list(month_names.values()).index(month)]
             new_transaction = pd.DataFrame({'Data': [date], 'Categoria': [category], 'Valor': [amount]})
-            if month not in st.session_state['monthly_transactions']:
-                st.session_state['monthly_transactions'][month] = new_transaction
+            if month_num not in st.session_state['monthly_transactions']:
+                st.session_state['monthly_transactions'][month_num] = new_transaction
             else:
-                st.session_state['monthly_transactions'][month] = pd.concat([st.session_state['monthly_transactions'][month], new_transaction], ignore_index=True)
+                st.session_state['monthly_transactions'][month_num] = pd.concat([st.session_state['monthly_transactions'][month_num], new_transaction], ignore_index=True)
             st.sidebar.success('Transação adicionada!')
+
+        # Funcionalidade para adicionar nova categoria
+        st.sidebar.header('Adicionar Nova Categoria')
+        new_category = st.sidebar.text_input('Nova Categoria')
+        if st.sidebar.button('Adicionar Categoria'):
+            if new_category and new_category not in st.session_state['categories']:
+                st.session_state['categories'].append(new_category)
+                st.sidebar.success(f'Categoria "{new_category}" adicionada!')
+            else:
+                st.sidebar.error('Categoria inválida ou já existente.')
 
         # Funcionalidade de upload de arquivo
         st.sidebar.header('Upload de Arquivo CSV')
@@ -37,9 +57,10 @@ class MeuDinheiroOrganizadoApp:
         st.title('Meu Dinheiro Organizado')
 
         # Exibir transações
-        selected_month = st.selectbox('Selecione o Mês', list(range(1, 13)))
-        if selected_month in st.session_state['monthly_transactions']:
-            transactions = st.session_state['monthly_transactions'][selected_month]
+        selected_month = st.selectbox('Selecione o Mês', list(month_names.values()))
+        selected_month_num = list(month_names.keys())[list(month_names.values()).index(selected_month)]
+        if selected_month_num in st.session_state['monthly_transactions']:
+            transactions = st.session_state['monthly_transactions'][selected_month_num]
             st.header('Histórico de Transações')
             st.dataframe(transactions)
 
