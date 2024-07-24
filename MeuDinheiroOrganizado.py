@@ -21,6 +21,14 @@ class MeuDinheiroOrganizadoApp:
             st.session_state['transactions'] = pd.concat([st.session_state['transactions'], new_transaction], ignore_index=True)
             st.sidebar.success('Transação adicionada!')
         
+        # Funcionalidade de upload de arquivo
+        st.sidebar.header('Upload de Arquivo CSV')
+        uploaded_file = st.sidebar.file_uploader("Escolha um arquivo CSV", type="csv")
+        
+        if uploaded_file is not None:
+            st.session_state['transactions'] = pd.read_csv(uploaded_file)
+            st.sidebar.success('Arquivo carregado com sucesso!')
+
         # Página principal
         st.title('Meu Dinheiro Organizado')
         
