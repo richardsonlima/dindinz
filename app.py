@@ -8,42 +8,49 @@ st.set_page_config(page_title="Guru dos Dinheirinhos", page_icon="💰", layout=
 
 # Função para carregar animações Lottie
 def load_lottiefile(filepath: str):
-    with open(filepath, "r") as f:
-        return json.load(f)
+    try:
+        with open(filepath, "r") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        st.error(f"Arquivo não encontrado: {filepath}")
+    except json.JSONDecodeError:
+        st.error("Erro ao decodificar o arquivo JSON")
+    except Exception as e:
+        st.error(f"Erro inesperado: {e}")
 
 # Carregar animações Lottie
 lottie_invest = load_lottiefile("Animation-FinanceGuru-1721707438111.json")
-st_lottie(lottie_invest, height=200, key="invest")
+if lottie_invest:
+    st_lottie(lottie_invest, height=200, key="invest")
 
-# Funções para carregar as aplicações
-def load_verificador_de_fatura():
+# Função para carregar um módulo e executar a aplicação
+def load_app(module_name, class_name=None):
     try:
-        module = import_module("VerificadorDeFatura")
-        app = module.main()
+        module = import_module(module_name)
+        if class_name:
+            app = getattr(module, class_name)()
+        else:
+            app = module.main()
         app.run()
+    except ImportError:
+        st.error(f"Módulo {module_name} não encontrado")
+    except AttributeError:
+        st.error(f"Classe ou função não encontrada no módulo {module_name}")
     except Exception as e:
-        st.error(f"Erro ao carregar Verificador de Fatura: {e}")
+        st.error(f"Erro ao carregar {module_name}: {e}")
 
-def load_simulacao_investidor():
-    try:
-        module = import_module("SimulacaoInvestidor")
-        app = module.SimulacaoInvestidorApp()
-        app.run()
-    except Exception as e:
-        st.error(f"Erro ao carregar Simulação de Investidor: {e}")
+# Menu com ícones
+menu_options = {
+    "Home": "🏠",
+    "Verificador de Fatura": "📄",
+    "Simulação de Investidor": "💹",
+    "Meu Dinheiro Organizado": "💼"
+}
 
-def load_meu_dinheiro_organizado():
-    try:
-        module = import_module("MeuDinheiroOrganizado")
-        app = module.MeuDinheiroOrganizadoApp()
-        app.run()
-    except Exception as e:
-        st.error(f"Erro ao carregar Meu Dinheiro Organizado: {e}")
+st.sidebar.title("Menu")
+selection = st.sidebar.radio("Navegação", list(menu_options.keys()), format_func=lambda x: f"{menu_options[x]} {x}")
 
-# Menu lateral
-menu = st.sidebar.selectbox("Menu", ["Home", "Verificador de Fatura", "Simulação de Investidor", "Meu Dinheiro Organizado"])
-
-if menu == "Home":
+if selection == "Home":
     st.title("Bem-vindo ao Guru dos Dinheirinhos!")
     st.write("""
     O **Guru dos Dinheirinhos** é a sua plataforma completa para gerenciar suas finanças pessoais e planejar seus investimentos de forma inteligente. Temos três aplicações poderosas para ajudá-lo a atingir seus objetivos financeiros:
@@ -80,9 +87,9 @@ if menu == "Home":
     
     Se tiver alguma dúvida ou precisar de assistência, não hesite em nos contatar. Aproveite ao máximo o Guru dos Dinheirinhos!
     """)
-elif menu == "Verificador de Fatura":
-    load_verificador_de_fatura()
-elif menu == "Simulação de Investidor":
-    load_simulacao_investidor()
-elif menu == "Meu Dinheiro Organizado":
-    load_meu_dinheiro_organizado()
+elif selection == "Verificador de Fatura":
+    load_app("VerificadorDeFatura")
+elif selection == "Simulação de Investidor":
+    load_app("SimulacaoInvestidor", "SimulacaoInvestidorApp")
+elif selection == "Meu Dinheiro Organizado":
+    load_app("MeuDinheiroOrganizado", "MeuDinheiroOrganizadoApp")
