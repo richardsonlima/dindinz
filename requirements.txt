@@ -9,3 +9,5 @@ pdfplumber
 frontend
 tools
 matplotlib
+altair 
+plotly
