@@ -35,6 +35,14 @@ def load_simulacao_investidor():
     except Exception as e:
         st.error(f"Erro ao carregar Simulação de Investidor: {e}")
 
+def load_meu_dinheiro_organizado():
+    try:
+        module = import_module("MeuDinheiroOrganizado")
+        app = module.MeuDinheiroOrganizadorApp()
+        app.run()
+    except Exception as e:
+        st.error(f"Erro ao carregar Meu Dinheiro Organizado: {e}")
+
 # Menu lateral
 menu = st.sidebar.selectbox("Menu", ["Home", "Verificador de Fatura", "Simulação de Investidor"])
 
@@ -56,7 +64,21 @@ if menu == "Home":
     - Simular diferentes cenários de investimento.
     - Comparar opções de rentabilidade, como Poupança, CDI e uma carteira diversificada de ações.
     - Visualizar seu crescimento financeiro ao longo dos anos e planejar sua jornada rumo ao primeiro milhão de reais.
-    
+
+    #### 3. Meu Dinheiro Organizado
+    A aplicação **Meu Dinheiro Organizado** é um rastreador financeiro pessoal desenvolvido com Streamlit. Ela permite que os usuários registrem 
+    suas transações financeiras, visualizem um histórico dessas transações, obtenham estatísticas resumidas e explorem gráficos interativos para 
+    análise de despesas.
+    - O usuário pode adicionar novas transações especificando a data, categoria (Receita, Mercado, Aluguel, Utilidades, Lazer, Outros) e valor.
+    - A entrada de dados é feita através de uma barra lateral na interface do usuário.
+    - A aplicação exibe uma tabela com todas as transações registradas, mostrando data, categoria e valor.
+    - A aplicação calcula e exibe um resumo das despesas totais agrupadas por categoria.
+    - **Gráfico de Barras (Altair)**: Mostra a distribuição das despesas por categoria.
+    - **Gráfico de Pizza (Plotly)**: Representa a distribuição percentual das despesas por categoria.
+    - **Gráfico de Série Temporal (Plotly)**: Mostra as despesas diárias ao longo do tempo.
+    - O usuário pode salvar as transações em um arquivo CSV.
+    - O usuário pode carregar as transações a partir de um arquivo CSV previamente salvo.
+
     ---
     
     Sinta-se à vontade para explorar cada aplicação através do menu lateral. Estamos aqui para ajudar você a alcançar a liberdade financeira e a tomar decisões mais informadas sobre suas finanças pessoais.
@@ -69,3 +91,6 @@ elif menu == "Verificador de Fatura":
 elif menu == "Simulação de Investidor":
     from SimulacaoInvestidor import SimulacaoInvestidorApp
     load_simulacao_investidor()
+elif menu == "Meu Dinheiro Organizado":
+    from MeuDinheiroOrganizado import MeuDinheiroOrganizadoApp
+    load_meu_dinheiro_organizado()
