@@ -31,17 +31,21 @@ class MeuDinheiroOrganizadoApp:
             st.session_state['wishlist'] = pd.DataFrame(columns=['Descrição', 'Categoria', 'Decisão'])
         if 'financial_goals' not in st.session_state:
             st.session_state['financial_goals'] = pd.DataFrame(columns=['Descrição', 'Valor Necessário', 'Data', 'Imagem'])
-    
+        if 'mural_sonhos' not in st.session_state:
+            st.session_state['mural_sonhos'] = pd.DataFrame(columns=['Descrição', 'Valor Necessário', 'Data', 'Imagem'])
+
     def run(self):
         # Navegação por abas
         st.sidebar.title("Menu")
-        menu = st.sidebar.radio("Selecione uma opção", ["Transações Mensais", "Despesas Fixas", "Despesas Variáveis", 
+        menu = st.sidebar.radio("Selecione uma opção", ["Transações Mensais", "Panorama Anual", "Despesas Fixas", "Despesas Variáveis", 
                                                        "Faturas de Cartões de Crédito", "Dívidas", "Investimentos", 
                                                        "Limite de Gastos por Categorias", "Cartões de Crédito", 
                                                        "Lista de Desejos", "Metas Financeiras", "Mural dos Sonhos"])
         
         if menu == "Transações Mensais":
             self.transacoes_mensais()
+        elif menu == "Panorama Anual":
+            self.panorama_anual()
         elif menu == "Despesas Fixas":
             self.despesas_fixas()
         elif menu == "Despesas Variáveis":
@@ -65,137 +69,144 @@ class MeuDinheiroOrganizadoApp:
 
     def transacoes_mensais(self):
         st.title("Transações Mensais")
-        # Lógica para adicionar e visualizar transações mensais
-        # ... (código existente)
-        
-    def despesas_fixas(self):
-        st.title("Despesas Fixas")
-        # Lógica para adicionar e visualizar despesas fixas
-        descricao = st.text_input("Descrição")
-        valor = st.number_input("Valor", min_value=0.0, format="%.2f")
-        if st.button("Adicionar Despesa Fixa"):
-            new_expense = pd.DataFrame({'Descrição': [descricao], 'Valor': [valor]})
-            st.session_state['fixed_expenses'] = pd.concat([st.session_state['fixed_expenses'], new_expense], ignore_index=True)
-            st.success("Despesa Fixa adicionada!")
-        st.dataframe(st.session_state['fixed_expenses'])
-        
-    def despesas_variaveis(self):
-        st.title("Despesas Variáveis")
-        # Lógica para adicionar e visualizar despesas variáveis
-        descricao = st.text_input("Descrição")
-        valor = st.number_input("Valor", min_value=0.0, format="%.2f")
-        if st.button("Adicionar Despesa Variável"):
-            new_expense = pd.DataFrame({'Descrição': [descricao], 'Valor': [valor]})
-            st.session_state['variable_expenses'] = pd.concat([st.session_state['variable_expenses'], new_expense], ignore_index=True)
-            st.success("Despesa Variável adicionada!")
-        st.dataframe(st.session_state['variable_expenses'])
-        
-    def faturas_cartoes(self):
-        st.title("Faturas de Cartões de Crédito")
-        # Lógica para adicionar e visualizar faturas de cartões de crédito
-        cartao = st.text_input("Cartão")
-        data_vencimento = st.date_input("Data de Vencimento")
-        valor = st.number_input("Valor", min_value=0.0, format="%.2f")
-        if st.button("Adicionar Fatura"):
-            new_bill = pd.DataFrame({'Cartão': [cartao], 'Data de Vencimento': [data_vencimento], 'Valor': [valor]})
-            st.session_state['credit_card_bills'] = pd.concat([st.session_state['credit_card_bills'], new_bill], ignore_index=True)
-            st.success("Fatura adicionada!")
-        st.dataframe(st.session_state['credit_card_bills'])
-        
-    def dividas(self):
-        st.title("Minhas Dívidas")
-        # Lógica para adicionar e visualizar dívidas
-        descricao = st.text_input("Descrição")
-        valor = st.number_input("Valor", min_value=0.0, format="%.2f")
-        if st.button("Adicionar Dívida"):
-            new_debt = pd.DataFrame({'Descrição': [descricao], 'Valor': [valor]})
-            st.session_state['debts'] = pd.concat([st.session_state['debts'], new_debt], ignore_index=True)
-            st.success("Dívida adicionada!")
-        st.dataframe(st.session_state['debts'])
-        
-    def investimentos(self):
-        st.title("Investimentos")
-        # Lógica para adicionar e visualizar investimentos
-        descricao = st.text_input("Descrição")
-        valor = st.number_input("Valor", min_value=0.0, format="%.2f")
-        if st.button("Adicionar Investimento"):
-            new_investment = pd.DataFrame({'Descrição': [descricao], 'Valor': [valor]})
-            st.session_state['investments'] = pd.concat([st.session_state['investments'], new_investment], ignore_index=True)
-            st.success("Investimento adicionado!")
-        st.dataframe(st.session_state['investments'])
-        
-    def limite_gastos(self):
-        st.title("Limite de Gastos por Categorias")
-        # Lógica para adicionar e visualizar limites de gastos
-        categoria = st.text_input("Categoria")
-        limite = st.number_input("Limite", min_value=0.0, format="%.2f")
-        if st.button("Adicionar Limite"):
-            new_limit = pd.DataFrame({'Categoria': [categoria], 'Limite': [limite]})
-            st.session_state['spending_limits'] = pd.concat([st.session_state['spending_limits'], new_limit], ignore_index=True)
-            st.success("Limite de Gasto adicionado!")
-        st.dataframe(st.session_state['spending_limits'])
-        
-    def cartoes_credito(self):
-        st.title("Meus Cartões de Crédito")
-        # Lógica para adicionar e visualizar cartões de crédito
-        cartao = st.text_input("Cartão")
-        limite = st.number_input("Limite", min_value=0.0, format="%.2f")
-        data_vencimento = st.date_input("Data de Vencimento")
-        imagem = st.file_uploader("Imagem do Cartão", type=["png", "jpg", "jpeg"])
-        if st.button("Adicionar Cartão"):
-            if imagem is not None:
-                image_path = f"images/{cartao}.png"
-                with open(image_path, "wb") as f:
-                    f.write(imagem.getbuffer())
-                new_card = pd.DataFrame({'Cartão': [cartao], 'Limite': [limite], 'Data de Vencimento': [data_vencimento], 'Imagem': [image_path]})
-                st.session_state['credit_cards'] = pd.concat([st.session_state['credit_cards'], new_card], ignore_index=True)
-                st.success("Cartão adicionado!")
-        st.dataframe(st.session_state['credit_cards'])
-        # Exibir imagens dos cartões
-        for index, row in st.session_state['credit_cards'].iterrows():
-            st.image(row['Imagem'], caption=row['Cartão'])
+        month_names = {
+            1: 'Janeiro', 2: 'Fevereiro', 3: 'Março', 4: 'Abril',
+            5: 'Maio', 6: 'Junho', 7: 'Julho', 8: 'Agosto',
+            9: 'Setembro', 10: 'Outubro', 11: 'Novembro', 12: 'Dezembro'
+        }
+        st.sidebar.header('Adicionar Transação')
+        month = st.sidebar.selectbox('Mês', list(month_names.values()))
+        date = st.sidebar.date_input('Data', datetime.today())
+        category = st.sidebar.selectbox('Categoria', st.session_state.get('categories', ['Entrada', 'Mercado', 'Aluguel', 'Utilidades', 'Lazer', 'Outros']))
+        amount = st.sidebar.number_input('Valor', min_value=0.0, format="%.2f")
 
-    def lista_desejos(self):
-        st.title("Lista de Desejos")
-        # Lógica para adicionar e visualizar lista de desejos
-        descricao = st.text_input("Descrição")
-        categoria = st.selectbox("Categoria", ['Roupas', 'Presentes', 'Show', 'Festivais', 'Eventos', 'Tecnologia', 'Cuidados Pessoais', 'Itens para Casa', 'Conhecimento', 'Estudos'])
-        decisao = st.radio("Decisão de Compra", ['😍 Eu preciso mesmo desse item?', '💵 Esse item cabe no meu orçamento hoje?', '⌛ Se eu esperar até amanhã, ainda vou lembrar que queria esse item?'])
-        if st.button("Adicionar à Lista de Desejos"):
-            new_wish = pd.DataFrame({'Descrição': [descricao], 'Categoria': [categoria], 'Decisão': [decisao]})
-            st.session_state['wishlist'] = pd.concat([st.session_state['wishlist'], new_wish], ignore_index=True)
-            st.success("Item adicionado à lista de desejos!")
-        st.dataframe(st.session_state['wishlist'])
+        if st.sidebar.button('Adicionar'):
+            month_num = list(month_names.keys())[list(month_names.values()).index(month)]
+            new_transaction = pd.DataFrame({'Data': [date], 'Categoria': [category], 'Valor': [amount]})
+            if month_num not in st.session_state['monthly_transactions']:
+                st.session_state['monthly_transactions'][month_num] = new_transaction
+            else:
+                st.session_state['monthly_transactions'][month_num] = pd.concat([st.session_state['monthly_transactions'][month_num], new_transaction], ignore_index=True)
+            st.sidebar.success('Transação adicionada!')
 
-    def metas_financeiras(self):
-        st.title("Metas Financeiras")
-        descricao = st.text_input("Descrição da Meta")
-        valor_necessario = st.number_input("Valor Necessário", min_value=0.0, format="%.2f")
-        data_meta = st.date_input("Data para atingir a Meta")
-        if st.button("Adicionar Meta Financeira"):
-            new_goal = pd.DataFrame({'Descrição': [descricao], 'Valor Necessário': [valor_necessario], 'Data': [data_meta]})
-            st.session_state['financial_goals'] = pd.concat([st.session_state['financial_goals'], new_goal], ignore_index=True)
-            st.success("Meta financeira adicionada!")
-        st.dataframe(st.session_state['financial_goals'])
+        st.sidebar.header('Adicionar Nova Categoria')
+        new_category = st.sidebar.text_input('Nova Categoria')
+        if st.sidebar.button('Adicionar Categoria'):
+            if new_category and new_category not in st.session_state.get('categories', []):
+                st.session_state['categories'].append(new_category)
+                st.sidebar.success(f'Categoria "{new_category}" adicionada!')
+            else:
+                st.sidebar.error('Categoria inválida ou já existente.')
 
-    def mural_sonhos(self):
-        st.title("Mural dos Sonhos")
-        descricao = st.text_input("Descrição do Sonho")
-        valor_necessario = st.number_input("Valor Necessário", min_value=0.0, format="%.2f")
-        data_meta = st.date_input("Data para atingir o Sonho")
-        imagem = st.file_uploader("Upload de imagem para o Sonho", type=["png", "jpg", "jpeg"])
-        if st.button("Adicionar ao Mural dos Sonhos"):
-            if imagem is not None:
-                image_path = f"images/{descricao.replace(' ', '_')}.png"
-                with open(image_path, "wb") as f:
-                    f.write(imagem.getbuffer())
-                new_dream = pd.DataFrame({'Descrição': [descricao], 'Valor Necessário': [valor_necessario], 'Data': [data_meta], 'Imagem': [image_path]})
-                st.session_state['mural_sonhos'] = pd.concat([st.session_state['mural_sonhos'], new_dream], ignore_index=True)
-                st.success("Sonho adicionado ao mural!")
-        # Exibir sonhos com imagens
-        for index, row in st.session_state['mural_sonhos'].iterrows():
-            st.image(row['Imagem'], caption=f"{row['Descrição']} - {row['Data']}")
+        st.sidebar.header('Upload de Arquivo CSV')
+        uploaded_file = st.sidebar.file_uploader("Escolha um arquivo CSV", type="csv")
+
+        if uploaded_file is not None:
+            df_uploaded = pd.read_csv(uploaded_file)
+            for _, row in df_uploaded.iterrows():
+                month = pd.to_datetime(row['Data']).month
+                new_transaction = pd.DataFrame({'Data': [row['Data']], 'Categoria': [row['Categoria']], 'Valor': [row['Valor']]})
+                if month not in st.session_state['monthly_transactions']:
+                    st.session_state['monthly_transactions'][month] = new_transaction
+                else:
+                    st.session_state['monthly_transactions'][month] = pd.concat([st.session_state['monthly_transactions'][month], new_transaction], ignore_index=True)
+            st.sidebar.success('Arquivo carregado com sucesso!')
+
+        st.title('Transações Mensais')
+
+        selected_month = st.selectbox('Selecione o Mês', list(month_names.values()))
+        selected_month_num = list(month_names.keys())[list(month_names.values()).index(selected_month)]
+        if selected_month_num in st.session_state['monthly_transactions']:
+            transactions = st.session_state['monthly_transactions'][selected_month_num]
+            st.header('Histórico de Transações')
+            st.dataframe(transactions)
+
+            st.header('Estatísticas Resumidas')
+            summary = transactions.groupby('Categoria')['Valor'].sum().reset_index()
+            st.dataframe(summary)
+
+            st.header('Despesas por Categoria (Altair)')
+            alt_chart = alt.Chart(summary).mark_bar().encode(
+                x='Categoria',
+                y='Valor',
+                color='Categoria'
+            ).properties(width=600)
+            st.altair_chart(alt_chart, use_container_width=True)
+
+            st.header('Despesas por Categoria (Plotly)')
+            plotly_chart = px.pie(summary, values='Valor', names='Categoria', title='Distribuição de Despesas')
+            st.plotly_chart(plotly_chart)
+
+            st.header('Despesas ao Longo do Tempo')
+            time_series = transactions.groupby('Data')['Valor'].sum().reset_index()
+            time_series_chart = px.line(time_series, x='Data', y='Valor', title='Despesas Diárias')
+            st.plotly_chart(time_series_chart)
+
+            st.header('Despesas por Categoria ao Longo do Tempo (Altair)')
+            stacked_bar_chart = alt.Chart(transactions).mark_bar().encode(
+                x='yearmonth(Data):O',
+                y='sum(Valor):Q',
+                color='Categoria'
+            ).properties(width=600)
+            st.altair_chart(stacked_bar_chart, use_container_width=True)
+
+            st.header('Gráfico de Dispersão (Plotly)')
+            scatter_chart = px.scatter(transactions, x='Data', y='Valor', color='Categoria', title='Dispersão de Despesas')
+            st.plotly_chart(scatter_chart)
+
+            st.header('Acumulação de Despesas ao Longo do Tempo (Plotly)')
+            area_chart = px.area(transactions, x='Data', y='Valor', color='Categoria', title='Acumulação de Despesas')
+            st.plotly_chart(area_chart)
+        else:
+            st.write('Nenhuma transação cadastrada para este mês.')
+
+        st.sidebar.header('Salvar/Carregar Dados')
+        if st.sidebar.button('Salvar Dados'):
+            transactions = pd.concat(st.session_state['monthly_transactions'].values(), ignore_index=True)
+            transactions.to_csv('transacoes.csv', index=False)
+            st.sidebar.success('Dados salvos em transacoes.csv')
+
+        if st.sidebar.button('Carregar Dados'):
+            transactions = pd.read_csv('transacoes.csv')
+            for _, row in transactions.iterrows():
+#
+            month = pd.to_datetime(row['Data']).month
+            new_transaction = pd.DataFrame({'Data': [row['Data']], 'Categoria': [row['Categoria']], 'Valor': [row['Valor']]})
+            if month not in st.session_state['monthly_transactions']:
+                st.session_state['monthly_transactions'][month] = new_transaction
+            else:
+                st.session_state['monthly_transactions'][month] = pd.concat([st.session_state['monthly_transactions'][month], new_transaction], ignore_index=True)
+        st.sidebar.success('Dados carregados de transacoes.csv')
+
+    def panorama_anual(self):
+        st.title("Panorama Anual de Despesas")
+        all_transactions = pd.concat(st.session_state['monthly_transactions'].values(), ignore_index=True)
+        st.dataframe(all_transactions)
+    
+        # Gráfico de área para a acumulação de despesas ao longo do ano
+        annual_expenses = all_transactions.groupby('Data')['Valor'].sum().cumsum().reset_index()
+        annual_expense_chart = px.area(annual_expenses, x='Data', y='Valor', title='Acumulação de Despesas ao Longo do Ano')
+        st.plotly_chart(annual_expense_chart)
+    
+        # Gráfico de dispersão para mostrar a dispersão das despesas
+        scatter_chart = px.scatter(all_transactions, x='Data', y='Valor', color='Categoria', title='Dispersão de Despesas ao Longo do Ano')
+        st.plotly_chart(scatter_chart)
+    
+        # Gráfico de barras empilhadas para mostrar a distribuição mensal das despesas
+        stacked_bar = alt.Chart(all_transactions).mark_bar().encode(
+            x='month(Data):O',
+            y='sum(Valor):Q',
+            color='Categoria',
+            tooltip=['month(Data)', 'Categoria', 'sum(Valor)']
+        ).properties(width=600, height=400, title='Despesas Mensais por Categoria')
+        st.altair_chart(stacked_bar, use_container_width=True)
+    
+        st.sidebar.header('Exportar Dados Anuais')
+        if st.sidebar.button('Exportar CSV'):
+            all_transactions.to_csv('dados_anuais.csv', index=False)
+            st.sidebar.success('Dados anuais exportados como dados_anuais.csv')
 
 if __name__ == "__main__":
-    app = MeuDinheiroOrganizadoApp()
-    app.run()
+app = MeuDinheiroOrganizadoApp()
+app.run()
+
