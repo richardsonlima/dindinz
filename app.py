@@ -83,7 +83,7 @@ if selection == "Home":
 
     ---
     
-    Sinta-se à vontade para explorar cada aplicação através do menu lateral. Estamos aqui para ajudar você a alcançar a liberdade financeira e a tomar decisões mais informadas sobre suas finanças pessoais.
+    Sinta-se à vontade para explorar cada aplicação através do menu lateral. DinDinZ foi desenvolvido para ajudar você a alcançar a liberdade financeira e a tomar decisões mais informadas sobre suas finanças pessoais.
     
     Criei o DinDinZ para uso e controle pessoal, mas se tiver alguma dúvida ou precisar entender algo me avise e não hesite em me contatar. Aproveite ao máximo o DinDinZ!
     """)
