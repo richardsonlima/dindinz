@@ -9,10 +9,21 @@ class SimulacaoInvestidorApp:
     def run(self):
         # Configurar a chave da API da OpenAI
         # openai.api_key = 'sk-xxx'  # Substitua pela sua chave da API
-                
+
+        # Função para verificar a conectividade com a URL da API
+        def verificar_conectividade(url):
+            try:
+                response = requests.head(url)
+                return response.status_code == 200
+            except RequestException:
+                return False
+
         # Função para obter a taxa de rendimento da poupança e CDI a partir da API do Banco Central
         def obter_taxa_bacen(endpoint, tentativas=3):
             url = f'https://api.bcb.gov.br/dados/serie/bcdata.sgs.{endpoint}/dados?formato=json'
+            if not verificar_conectividade(url):
+                st.error(f"Não foi possível conectar à URL: {url}")
+                return None
             for tentativa in range(tentativas):
                 try:
                     response = requests.get(url)
@@ -20,7 +31,12 @@ class SimulacaoInvestidorApp:
                     data = response.json()
                     if len(data) == 0:
                         raise ValueError("Nenhum dado retornado da API")
-                    return float(data[-1]['valor']) / 100
+                    taxa = float(data[-1]['valor']) / 100
+                    # Validação da taxa para garantir que está dentro de um intervalo esperado
+                    if 0 <= taxa <= 0.3:
+                        return taxa
+                    else:
+                        raise ValueError(f"Taxa fora do intervalo esperado: {taxa}")
                 except (RequestException, ValueError, IndexError) as e:
                     st.error(f"Tentativa {tentativa + 1} de {tentativas}: Erro ao obter dados da API do Banco Central para o endpoint {endpoint}: {e}")
                     if tentativa == tentativas - 1:
