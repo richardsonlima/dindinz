@@ -11,18 +11,20 @@ class SimulacaoInvestidorApp:
         # openai.api_key = 'sk-xxx'  # Substitua pela sua chave da API
                 
         # Função para obter a taxa de rendimento da poupança e CDI a partir da API do Banco Central
-        def obter_taxa_bacen(endpoint):
+        def obter_taxa_bacen(endpoint, tentativas=3):
             url = f'https://api.bcb.gov.br/dados/serie/bcdata.sgs.{endpoint}/dados?formato=json'
-            try:
-                response = requests.get(url)
-                response.raise_for_status()  # Levanta uma exceção para respostas com erro
-                data = response.json()
-                if len(data) == 0:
-                    raise ValueError("Nenhum dado retornado da API")
-                return float(data[-1]['valor']) / 100
-            except (RequestException, ValueError, IndexError) as e:
-                st.error(f"Erro ao obter dados da API do Banco Central para o endpoint {endpoint}: {e}")
-                return None
+            for tentativa in range(tentativas):
+                try:
+                    response = requests.get(url)
+                    response.raise_for_status()  # Levanta uma exceção para respostas com erro
+                    data = response.json()
+                    if len(data) == 0:
+                        raise ValueError("Nenhum dado retornado da API")
+                    return float(data[-1]['valor']) / 100
+                except (RequestException, ValueError, IndexError) as e:
+                    st.error(f"Tentativa {tentativa + 1} de {tentativas}: Erro ao obter dados da API do Banco Central para o endpoint {endpoint}: {e}")
+                    if tentativa == tentativas - 1:
+                        return None
         
         # Função para calcular o rendimento
         def calcular_rendimento(valor_inicial, valor_mensal, taxa_anual, anos=30):
@@ -121,7 +123,12 @@ class SimulacaoInvestidorApp:
             }
             taxas = {}
             for nome, endpoint in endpoints.items():
-                taxas[nome] = obter_taxa_bacen(endpoint)
+                taxa = obter_taxa_bacen(endpoint)
+                if taxa is not None:
+                    taxas[nome] = taxa
+                else:
+                    st.warning(f"Usando valor default para {nome} devido a erro na API.")
+                    taxas[nome] = 0.05  # Valor default ou fallback
             return taxas
         
         def obter_taxas():
