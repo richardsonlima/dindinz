@@ -135,7 +135,7 @@ class SimulacaoInvestidorApp:
             return taxas
         
         # Configuração inicial do Streamlit
-        st.set_page_config(page_title="Jornada de Investimento", page_icon="💰", layout="wide")
+        #st.set_page_config(page_title="Jornada de Investimento", page_icon="💰", layout="wide")
         
         # Título e animação
         st.title('💰 Simulador do Investidor')
