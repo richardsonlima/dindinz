@@ -4,12 +4,9 @@ import numpy as np
 import yfinance as yf
 import requests
 from requests.exceptions import RequestException
-import openai
-import json
 
 class SimulacaoInvestidorApp:
     def run(self):
-    
         # Configurar a chave da API da OpenAI
         # openai.api_key = 'sk-xxx'  # Substitua pela sua chave da API
                 
@@ -93,21 +90,52 @@ class SimulacaoInvestidorApp:
                 st.write(parte)
         
         # Obter taxas de rendimento
-        def obter_taxas():
+        def obter_taxas_tesouro_direto():
+            endpoints = {
+                'Tesouro Prefixado 2029': '1784',
+                'Tesouro Prefixado com Juros Semestrais 2033': '1785',
+                'Tesouro IPCA+ 2045': '1786',
+                'Tesouro Prefixado com Juros Semestrais 2031': '1787',
+                'Tesouro Prefixado com Juros Semestrais 2029': '1788',
+                'Tesouro IPCA+ com Juros Semestrais 2055': '1789',
+                'Tesouro Prefixado com Juros Semestrais 2027': '1790',
+                'Tesouro Prefixado 2026': '1791',
+                'Tesouro IPCA+ com Juros Semestrais 2050': '1792',
+                'Tesouro IPCA+ com Juros Semestrais 2045': '1793',
+                'Tesouro IPCA+ 2035': '1794',
+                'Tesouro IPCA+ com Juros Semestrais 2040': '1795',
+                'Tesouro IPCA+ com Juros Semestrais 2035': '1796',
+                'Tesouro IPCA+ com Juros Semestrais 2032': '1797',
+                'Tesouro Prefixado 2025': '1798',
+                'Tesouro IPCA+ com Juros Semestrais 2030': '1799',
+                'Tesouro Prefixado com Juros Semestrais 2025': '1800',
+                'Tesouro Prefixado 2024': '1801',
+                'Tesouro IPCA+ 2026': '1802',
+                'Tesouro IPCA+ com Juros Semestrais 2026': '1803',
+                'Tesouro Selic 2027': '1804',
+                'Tesouro Selic 2025': '1805',
+                'Tesouro Selic 2024': '1806',
+                'Tesouro IPCA+ 2024': '1807',
+                'Tesouro IPCA+ com Juros Semestrais 2024': '1808',
+                'Tesouro IGPM+ com Juros Semestrais 2031': '1809'
+            }
             taxas = {}
+            for nome, endpoint in endpoints.items():
+                taxas[nome] = obter_taxa_bacen(endpoint)
+            return taxas
+        
+        def obter_taxas():
+            taxas = obter_taxas_tesouro_direto()
             taxas['Poupança'] = obter_taxa_bacen('7454')  # Poupança
             taxas['CDI'] = obter_taxa_bacen('12')  # CDI
-            taxas['Tesouro IPCA+'] = obter_taxa_bacen('433')  # Tesouro IPCA+
-            taxas['Tesouro Selic'] = obter_taxa_bacen('4390')  # Tesouro Selic
             taxas['LCI'] = 0.06  # Placeholder para LCI, ajustar conforme necessário
             taxas['LCA'] = 0.06  # Placeholder para LCA, ajustar conforme necessário
             taxas['Previdência Privada PGBL'] = 0.07  # Placeholder para Previdência Privada PGBL, ajustar conforme necessário
             taxas['Previdência Privada VGBL'] = 0.07  # Placeholder para Previdência Privada VGBL, ajustar conforme necessário
-        
             return taxas
         
         # Configuração inicial do Streamlit
-        # st.set_page_config(page_title="Jornada de Investimento", page_icon="💰", layout="wide")
+        st.set_page_config(page_title="Jornada de Investimento", page_icon="💰", layout="wide")
         
         # Título e animação
         st.title('💰 Simulador do Investidor')
@@ -128,19 +156,13 @@ class SimulacaoInvestidorApp:
         taxas = obter_taxas()
         
         # Verifica se todas as taxas foram obtidas com sucesso
-        if any(taxa is None for taxa in [taxas['Poupança'], taxas['CDI'], taxas['Tesouro IPCA+'], taxas['Tesouro Selic']]):
+        if any(taxa is None for taxa in taxas.values()):
             st.error("Não foi possível obter todas as taxas de rendimento. Por favor, tente novamente mais tarde.")
         else:
             # Seção para exibir e editar taxas de juros
             st.sidebar.header('Taxas de Juros')
-            taxas['Poupança'] = st.sidebar.number_input('Taxa Poupança (%)', value=taxas['Poupança'] * 100) / 100
-            taxas['CDI'] = st.sidebar.number_input('Taxa CDI (%)', value=taxas['CDI'] * 100) / 100
-            taxas['Tesouro IPCA+'] = st.sidebar.number_input('Taxa Tesouro IPCA+ (%)', value=taxas['Tesouro IPCA+'] * 100) / 100
-            taxas['Tesouro Selic'] = st.sidebar.number_input('Taxa Tesouro Selic (%)', value=taxas['Tesouro Selic'] * 100) / 100
-            taxas['LCI'] = st.sidebar.number_input('Taxa LCI (%)', value=taxas['LCI'] * 100) / 100
-            taxas['LCA'] = st.sidebar.number_input('Taxa LCA (%)', value=taxas['LCA'] * 100) / 100
-            taxas['Previdência Privada PGBL'] = st.sidebar.number_input('Taxa Previdência Privada PGBL (%)', value=taxas['Previdência Privada PGBL'] * 100) / 100
-            taxas['Previdência Privada VGBL'] = st.sidebar.number_input('Taxa Previdência Privada VGBL (%)', value=taxas['Previdência Privada VGBL'] * 100) / 100
+            for nome_titulo, taxa in taxas.items():
+                taxas[nome_titulo] = st.sidebar.number_input(f'Taxa {nome_titulo} (%)', value=taxa * 100) / 100
         
             tickers_carteira_barsi = ['TAEE11', 'TRPL4', 'BBSE3', 'ITSA4', 'ABEV3', 'EGIE3', 'ENBR3', 'ETER3','CGRA4', 'BBAS3', 'PSSA3', 'SAPR11', 'LEVE3', 'CSMG3', 'CEEB3', 'CEEB5', 'GRND3', 'HYPE3', 'BBDC4']   
             retornos_anuais_barsi = obter_rendimento_acoes(tickers_carteira_barsi)
@@ -149,19 +171,8 @@ class SimulacaoInvestidorApp:
         
             # Obter e mostrar opções de taxas de rendimento
             st.header('Escolha a Taxa de Rendimento Anual')
-            opcoes_taxas = {
-                'Poupança': taxas['Poupança'],
-                'CDI': taxas['CDI'],
-                'Tesouro IPCA+': taxas['Tesouro IPCA+'],
-                'Tesouro Selic': taxas['Tesouro Selic'],
-                'LCI': taxas['LCI'],
-                'LCA': taxas['LCA'],
-                'Previdência Privada PGBL': taxas['Previdência Privada PGBL'],
-                'Previdência Privada VGBL': taxas['Previdência Privada VGBL'],
-                'Carteira Barsi': taxas['Carteira Barsi'],
-                'TICKERS Customizados': None  # Placeholder para TICKERS customizados
-            }
-            opcao_taxa = st.selectbox('Escolha a Taxa de Rendimento Anual', list(opcoes_taxas.keys()))
+            opcoes_taxas = list(taxas.keys())
+            opcao_taxa = st.selectbox('Escolha a Taxa de Rendimento Anual', opcoes_taxas)
         
             tickers_customizados = []
             taxa_carteira_customizada = 0.0
@@ -179,7 +190,7 @@ class SimulacaoInvestidorApp:
                     st.error("Por favor, insira os TICKERS customizados.")
         
             if opcao_taxa in opcoes_taxas:
-                taxa_selecionada = opcoes_taxas[opcao_taxa]
+                taxa_selecionada = taxas[opcao_taxa]
                 st.write(f'Taxa Anual: {taxa_selecionada * 100:.2f}%')
             elif opcao_taxa == 'Carteira Barsi':
                 st.write('Informações dos TICKERS da Carteira Barsi:')
@@ -209,37 +220,11 @@ class SimulacaoInvestidorApp:
                 st.line_chart(df['Valor Acumulado com Rentabilidade'])
         
             # Calcular rendimentos para cada opção para visualização comparativa
-            valores_poupanca = calcular_rendimento(valor_inicial, valor_mensal, taxas['Poupança'], anos)
-            valores_cdi = calcular_rendimento(valor_inicial, valor_mensal, taxas['CDI'], anos)
-            valores_ipca = calcular_rendimento(valor_inicial, valor_mensal, taxas['Tesouro IPCA+'], anos)
-            valores_selic = calcular_rendimento(valor_inicial, valor_mensal, taxas['Tesouro Selic'], anos)
-            valores_lci = calcular_rendimento(valor_inicial, valor_mensal, taxas['LCI'], anos)
-            valores_lca = calcular_rendimento(valor_inicial, valor_mensal, taxas['LCA'], anos)
-            valores_pgbl = calcular_rendimento(valor_inicial, valor_mensal, taxas['Previdência Privada PGBL'], anos)
-            valores_vgbl = calcular_rendimento(valor_inicial, valor_mensal, taxas['Previdência Privada VGBL'], anos)
-            valores_barsi = calcular_rendimento(valor_inicial, valor_mensal, taxas['Carteira Barsi'], anos)
+            valores_comparacao = {nome: calcular_rendimento(valor_inicial, valor_mensal, taxa, anos) for nome, taxa in taxas.items()}
             
-            if tickers_customizados:
-                valores_customizados = calcular_rendimento(valor_inicial, valor_mensal, taxa_carteira_customizada, anos)
-            else:
-                valores_customizados = []
-        
             # Gerar DataFrame para exibir os resultados comparativos
-            df_comparativo = pd.DataFrame({
-                'Mês': range(1, anos * 12 + 1),
-                'Poupança': valores_poupanca,
-                'CDI': valores_cdi,
-                'Tesouro IPCA+': valores_ipca,
-                'Tesouro Selic': valores_selic,
-                'LCI': valores_lci,
-                'LCA': valores_lca,
-                'Previdência Privada PGBL': valores_pgbl,
-                'Previdência Privada VGBL': valores_vgbl,
-                'Carteira Barsi': valores_barsi
-            })
-        
-            if tickers_customizados:
-                df_comparativo['Customizado'] = valores_customizados
+            df_comparativo = pd.DataFrame(valores_comparacao)
+            df_comparativo.insert(0, 'Mês', range(1, anos * 12 + 1))
         
             st.header("Comparação dos diferentes investimentos")
             st.write(df_comparativo)
@@ -254,8 +239,7 @@ class SimulacaoInvestidorApp:
             #     prompt = f"Os resultados resumidos dos investimentos são os seguintes:\n\n{resumo_dados.to_string()}\n\nBaseado nesses dados, forneça insights e sugestões."
             #     insights = obter_insights(prompt)
             #     exibir_texto_longo(insights)
-        
-    
+
 if __name__ == "__main__":
     app = SimulacaoInvestidorApp()
     app.run()
