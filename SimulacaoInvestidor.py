@@ -38,10 +38,11 @@ class SimulacaoInvestidorApp:
                     else:
                         raise ValueError(f"Taxa fora do intervalo esperado: {taxa}")
                 except (RequestException, ValueError, IndexError) as e:
-                    st.error(f"Tentativa {tentativa + 1} de {tentativas}: Erro ao obter dados da API do Banco Central para o endpoint {endpoint}: {e}")
                     if tentativa == tentativas - 1:
-                        return None
-        
+                        st.error(f"Erro na plataforma do BACEN, taxas fora do intervalo esperado. Iremos ajustar para usar valor um padrão.")
+                        st.spinner("Ajustando para valor padrão...")
+                        return 0.05  # Valor padrão
+
         # Função para calcular o rendimento
         def calcular_rendimento(valor_inicial, valor_mensal, taxa_anual, anos=30):
             meses = anos * 12
@@ -143,8 +144,8 @@ class SimulacaoInvestidorApp:
                 if taxa is not None:
                     taxas[nome] = taxa
                 else:
-                    st.warning(f"Usando valor default para {nome} devido a erro na API.")
-                    taxas[nome] = 0.05  # Valor default ou fallback
+                    st.warning(f"Usando valor padrão para {nome} devido a erro na API.")
+                    taxas[nome] = 0.05  # Valor padrão
             return taxas
         
         def obter_taxas():
