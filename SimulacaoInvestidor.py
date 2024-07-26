@@ -142,7 +142,7 @@ class SimulacaoInvestidorApp:
             taxas['Previdência Privada PGBL'] = st.sidebar.number_input('Taxa Previdência Privada PGBL (%)', value=taxas['Previdência Privada PGBL'] * 100) / 100
             taxas['Previdência Privada VGBL'] = st.sidebar.number_input('Taxa Previdência Privada VGBL (%)', value=taxas['Previdência Privada VGBL'] * 100) / 100
         
-            tickers_carteira_barsi = ['BBAS3', 'ITUB4', 'SANB11', 'BBDC4', 'PSSA3', 'TAEE11', 'TRPL4', 'KLBN4']
+            tickers_carteira_barsi = ['TAEE11', 'TRPL4', 'BBSE3', 'ITSA4', 'ABEV3', 'EGIE3', 'ENBR3', 'ETER3','CGRA4', 'BBAS3', 'PSSA3', 'SAPR11', 'LEVE3', 'CSMG3', 'CEEB3', 'CEEB5', 'GRND3', 'HYPE3', 'BBDC4']   
             retornos_anuais_barsi = obter_rendimento_acoes(tickers_carteira_barsi)
             taxas['Carteira Barsi'] = np.mean(list(retornos_anuais_barsi.values()))
             info_carteira_barsi = obter_info_acoes(tickers_carteira_barsi)
