@@ -6,7 +6,7 @@ import re
 import matplotlib.pyplot as plt
 
 # Configurar a chave da API do OpenAI
-openai.api_key = 'sk-xxxx'
+openai.api_key = 'sk-xxxx'  # Substitua pelo uso de secrets em produção
 
 @st.cache_data
 def extract_text_from_pdf(pdf_file):
@@ -30,9 +30,9 @@ def categorize_transactions(transactions):
         'Cafeteria': ['STARBUCKS', 'Cafe', 'Cafeteria'],
         'Rotisserie': ['ROTISSERIE'],
         'Chocolateria': ['CACAU SHOW'],
-        'Mercado': ['PAO DE ACUCAR', 'CARREFOUR', 'PAO DE ACUCAR', 'PALACIO'],
-        'SuperMercado': ['PAO DE ACUCAR', 'CARREFOUR','PAO DE ACUCAR', 'PALACIO'],
-        'HiperMercado': ['PAO DE ACUCAR', 'CARREFOUR', 'PAO DE ACUCAR', 'PALACIO'],
+        'Mercado': ['PAO DE ACUCAR', 'CARREFOUR', 'PALACIO'],
+        'SuperMercado': ['PAO DE ACUCAR', 'CARREFOUR', 'PALACIO'],
+        'HiperMercado': ['PAO DE ACUCAR', 'CARREFOUR', 'PALACIO'],
         'Hortifruti': ['HORTIFRUTI'],
         'Sacolao': ['SETE DIAS SACOLAO LTD'],
         'Frigorifico': ['PAG*CasaDeCarnesOMeu'],
@@ -107,14 +107,15 @@ def plot_expenses_by_category(df):
     df['Valor'] = df['Valor'].astype(float)
     category_totals = df.groupby('Categoria')['Valor'].sum().sort_values()
     
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(10, 8))
     category_totals.plot(kind='barh', ax=ax, color='skyblue')
     ax.set_title('Despesas por Categoria', fontsize=14, fontweight='bold')
     ax.set_xlabel('Total Gasto (R$)', fontsize=12)
     ax.set_ylabel('Categoria', fontsize=12)
     plt.xticks(fontsize=10)
     plt.yticks(fontsize=10)
-    
+    plt.tight_layout()
+
     st.pyplot(fig)
 
 def format_text_extracted(text):
@@ -153,6 +154,38 @@ def chat_with_openai(user_input, df):
         ]
     )
     return response['choices'][0]['message']['content']
+
+def extract_parcelled_purchases(text):
+    # Pattern to match parcelled purchases
+    pattern = re.compile(r"(?<=Compras parceladas - próximas faturas)(.*?)(?=\nLançamentos no cartão)", re.DOTALL)
+    match = pattern.search(text)
+    if match:
+        parcelled_purchases_text = match.group(1)
+        lines = parcelled_purchases_text.strip().split('\n')
+        parcelled_purchases = []
+        for line in lines:
+            parts = re.split(r'\s{2,}', line)
+            if len(parts) >= 3:
+                parcelled_purchases.append({
+                    'Data': parts[0],
+                    'Estabelecimento': parts[1],
+                    'Valor': float(parts[2].replace('.', '').replace(',', '.'))
+                })
+        return parcelled_purchases
+    return []
+
+def extract_invoice_totals(text):
+    # Extract the total amount of the invoice
+    total_pattern = re.compile(r"O total da sua fatura é:\s+R\$\s+([\d,.]+)")
+    total_match = total_pattern.search(text)
+    total_invoice = float(total_match.group(1).replace('.', '').replace(',', '.')) if total_match else None
+
+    # Extract the value of the document
+    value_pattern = re.compile(r"Valor do Documento\s+R\$\s+([\d,.]+)")
+    value_match = value_pattern.search(text)
+    document_value = float(value_match.group(1).replace('.', '').replace(',', '.')) if value_match else None
+
+    return total_invoice, document_value
 
 def main():
     st.markdown("""
@@ -209,6 +242,21 @@ def main():
         transactions = categorize_transactions(transactions)
         df = pd.DataFrame(transactions)
         st.dataframe(df.style.format({"Valor": "R$ {:.2f}"}))
+
+        # New functionality: Displaying Parcelled Purchases
+        st.subheader("📅 Compras Parceladas - Próximas Faturas:")
+        parcelled_purchases = extract_parcelled_purchases(text)
+        parcelled_df = pd.DataFrame(parcelled_purchases)
+        if not parcelled_df.empty:
+            st.dataframe(parcelled_df.style.format({"Valor": "R$ {:.2f}"}))
+        else:
+            st.write("Nenhuma compra parcelada encontrada.")
+
+        # New functionality: Displaying Invoice Totals
+        total_invoice, document_value = extract_invoice_totals(text)
+        st.subheader("📜 Resumo da Fatura")
+        st.write(f"**O total da sua fatura é:** R$ {total_invoice:,.2f}" if total_invoice else "Total da fatura não encontrado.")
+        st.write(f"**Valor do Documento:** R$ {document_value:,.2f}" if document_value else "Valor do documento não encontrado.")
 
         st.subheader("📊 Totais gastos por categoria:")
         category_totals = df.groupby('Categoria')['Valor'].sum()
