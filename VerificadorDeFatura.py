@@ -156,23 +156,11 @@ def chat_with_openai(user_input, df):
     return response['choices'][0]['message']['content']
 
 def extract_parcelled_purchases(text):
-    # Pattern to match parcelled purchases
-    pattern = re.compile(r"(?<=Compras parceladas - próximas faturas)(.*?)(?=\nLançamentos no cartão)", re.DOTALL)
-    match = pattern.search(text)
-    if match:
-        parcelled_purchases_text = match.group(1)
-        lines = parcelled_purchases_text.strip().split('\n')
-        parcelled_purchases = []
-        for line in lines:
-            parts = re.split(r'\s{2,}', line)
-            if len(parts) >= 3:
-                parcelled_purchases.append({
-                    'Data': parts[0],
-                    'Estabelecimento': parts[1],
-                    'Valor': float(parts[2].replace('.', '').replace(',', '.'))
-                })
-        return parcelled_purchases
-    return []
+    # Pattern to match parcelled purchases (ending with a pattern like MM/YY or MM/YY)
+    pattern = re.compile(r'(\d{2}/\d{2})\s+(.+?)\s+(\d{1,3}(?:\.\d{3})*,\d{2})\s+\d{2}/\d{2}')
+    matches = pattern.findall(text)
+    parcelled_purchases = [{'Data': match[0], 'Descrição': match[1], 'Valor': float(match[2].replace('.', '').replace(',', '.'))} for match in matches]
+    return parcelled_purchases
 
 def extract_invoice_totals(text):
     # Extract the total amount of the invoice
