@@ -1,4 +1,4 @@
-# Guru dos Dinheirinhos 💰
+# DinDinz 💰
 
 
 
