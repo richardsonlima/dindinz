@@ -156,8 +156,8 @@ def chat_with_openai(user_input, df):
     return response['choices'][0]['message']['content']
 
 def extract_parcelled_purchases(text):
-    # Pattern to match parcelled purchases (ending with a pattern like MM/YY or MM/YY)
-    pattern = re.compile(r'(\d{2}/\d{2})\s+(.+?)\s+(\d{1,3}(?:\.\d{3})*,\d{2})\s+\d{2}/\d{2}')
+    # Pattern to match parcelled purchases (look for patterns like XX/XX at the end of the description)
+    pattern = re.compile(r'(\d{2}/\d{2})\s+(.+?)\s+(\d{1,3}(?:\.\d{3})*,\d{2})\s+(\d{2}/\d{2})$')
     matches = pattern.findall(text)
     parcelled_purchases = [{'Data': match[0], 'Descrição': match[1], 'Valor': float(match[2].replace('.', '').replace(',', '.'))} for match in matches]
     return parcelled_purchases
