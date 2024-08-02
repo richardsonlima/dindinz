@@ -6,7 +6,7 @@ import re
 import matplotlib.pyplot as plt
 
 # Configurar a chave da API do OpenAI
-openai.api_key = 'sk-xxxx'  # Substitua pelo uso de secrets em produção
+openai.api_key = 'sk-xxxx'
 
 @st.cache_data
 def extract_text_from_pdf(pdf_file):
@@ -30,9 +30,9 @@ def categorize_transactions(transactions):
         'Cafeteria': ['STARBUCKS', 'Cafe', 'Cafeteria'],
         'Rotisserie': ['ROTISSERIE'],
         'Chocolateria': ['CACAU SHOW'],
-        'Mercado': ['PAO DE ACUCAR', 'CARREFOUR', 'PALACIO'],
-        'SuperMercado': ['PAO DE ACUCAR', 'CARREFOUR', 'PALACIO'],
-        'HiperMercado': ['PAO DE ACUCAR', 'CARREFOUR', 'PALACIO'],
+        'Mercado': ['PAO DE ACUCAR', 'CARREFOUR', 'PAO DE ACUCAR', 'PALACIO'],
+        'SuperMercado': ['PAO DE ACUCAR', 'CARREFOUR','PAO DE ACUCAR', 'PALACIO'],
+        'HiperMercado': ['PAO DE ACUCAR', 'CARREFOUR', 'PAO DE ACUCAR', 'PALACIO'],
         'Hortifruti': ['HORTIFRUTI'],
         'Sacolao': ['SETE DIAS SACOLAO LTD'],
         'Frigorifico': ['PAG*CasaDeCarnesOMeu'],
@@ -75,6 +75,25 @@ def categorize_transactions(transactions):
             transaction['Categoria'] = 'Outros'
     return transactions
 
+def parse_instalment_purchases(transactions):
+    instalment_pattern = re.compile(r'\d{2}/\d{2}$')
+    instalment_transactions = [transaction for transaction in transactions if instalment_pattern.search(transaction['Descrição'])]
+    
+    instalment_df = pd.DataFrame(instalment_transactions)
+    if not instalment_df.empty:
+        instalment_df[['Parcela Atual', 'Total Parcelas']] = instalment_df['Descrição'].str.extract(r'(\d{2})/(\d{2})')
+        instalment_df['Parcela Atual'] = instalment_df['Parcela Atual'].astype(int)
+        instalment_df['Total Parcelas'] = instalment_df['Total Parcelas'].astype(int)
+    
+    return instalment_df
+
+def summarize_instalments(instalment_df):
+    next_installment = instalment_df[instalment_df['Parcela Atual'] == 1]['Valor'].sum()
+    remaining_installments = instalment_df[instalment_df['Parcela Atual'] > 1]['Valor'].sum()
+    total_future_installments = instalment_df['Valor'].sum()
+    
+    return next_installment, remaining_installments, total_future_installments
+
 def analyze_text_with_openai(df):
     category_totals = df.groupby('Categoria')['Valor'].sum().to_dict()
     total_spent = df['Valor'].sum()
@@ -107,15 +126,14 @@ def plot_expenses_by_category(df):
     df['Valor'] = df['Valor'].astype(float)
     category_totals = df.groupby('Categoria')['Valor'].sum().sort_values()
     
-    fig, ax = plt.subplots(figsize=(10, 8))
+    fig, ax = plt.subplots()
     category_totals.plot(kind='barh', ax=ax, color='skyblue')
     ax.set_title('Despesas por Categoria', fontsize=14, fontweight='bold')
     ax.set_xlabel('Total Gasto (R$)', fontsize=12)
     ax.set_ylabel('Categoria', fontsize=12)
     plt.xticks(fontsize=10)
     plt.yticks(fontsize=10)
-    plt.tight_layout()
-
+    
     st.pyplot(fig)
 
 def format_text_extracted(text):
@@ -154,26 +172,6 @@ def chat_with_openai(user_input, df):
         ]
     )
     return response['choices'][0]['message']['content']
-
-def extract_parcelled_purchases(text):
-    # Pattern to match parcelled purchases (ending with a pattern like XX/YY)
-    pattern = re.compile(r'(\d{2}/\d{2})\s+(.+?)\s+(\d{1,3}(?:\.\d{3})*,\d{2})\s+(\d{2}/\d{2})')
-    matches = pattern.findall(text)
-    parcelled_purchases = [{'Data': match[0], 'Descrição': match[1], 'Valor': float(match[2].replace('.', '').replace(',', '.'))} for match in matches if "/" in match[3]]
-    return parcelled_purchases
-
-def extract_invoice_totals(text):
-    # Extract the total amount of the invoice
-    total_pattern = re.compile(r"O total da sua fatura é:\s+R\$\s+([\d,.]+)")
-    total_match = total_pattern.search(text)
-    total_invoice = float(total_match.group(1).replace('.', '').replace(',', '.')) if total_match else None
-
-    # Extract the value of the document
-    value_pattern = re.compile(r"Valor do Documento\s+R\$\s+([\d,.]+)")
-    value_match = value_pattern.search(text)
-    document_value = float(value_match.group(1).replace('.', '').replace(',', '.')) if value_match else None
-
-    return total_invoice, document_value
 
 def main():
     st.markdown("""
@@ -231,21 +229,6 @@ def main():
         df = pd.DataFrame(transactions)
         st.dataframe(df.style.format({"Valor": "R$ {:.2f}"}))
 
-        # New functionality: Displaying Parcelled Purchases
-        st.subheader("📅 Compras Parceladas - Próximas Faturas:")
-        parcelled_purchases = extract_parcelled_purchases(text)
-        parcelled_df = pd.DataFrame(parcelled_purchases)
-        if not parcelled_df.empty:
-            st.dataframe(parcelled_df.style.format({"Valor": "R$ {:.2f}"}))
-        else:
-            st.write("Nenhuma compra parcelada encontrada.")
-
-        # New functionality: Displaying Invoice Totals
-        total_invoice, document_value = extract_invoice_totals(text)
-        st.subheader("📜 Resumo da Fatura")
-        st.write(f"**O total da sua fatura é:** R$ {total_invoice:,.2f}" if total_invoice else "Total da fatura não encontrado.")
-        st.write(f"**Valor do Documento:** R$ {document_value:,.2f}" if document_value else "Valor do documento não encontrado.")
-
         st.subheader("📊 Totais gastos por categoria:")
         category_totals = df.groupby('Categoria')['Valor'].sum()
         st.dataframe(category_totals.apply(lambda x: f"R$ {x:,.2f}"))
@@ -256,6 +239,16 @@ def main():
         st.subheader("📊 Gráfico de Despesas por Categoria:")
         plot_expenses_by_category(df)
         
+        st.subheader("📊 Compras Parceladas - Próximas Faturas:")
+        instalment_df = parse_instalment_purchases(transactions)
+        st.dataframe(instalment_df[['Data', 'Descrição', 'Valor']].style.format({"Valor": "R$ {:.2f}"}))
+        
+        next_installment, remaining_installments, total_future_installments = summarize_instalments(instalment_df)
+        
+        st.write(f"**Próxima fatura:** R$ {next_installment:,.2f}")
+        st.write(f"**Demais faturas:** R$ {remaining_installments:,.2f}")
+        st.write(f"**Total para próximas faturas:** R$ {total_future_installments:,.2f}")
+
         st.subheader("🧠 Insights financeiros via Inteligência Artificial (modelo: gpt-4o):")
         analysis = analyze_text_with_openai(df)
         formatted_analysis = format_analysis_text(analysis)
