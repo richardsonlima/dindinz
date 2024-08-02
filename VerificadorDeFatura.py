@@ -76,18 +76,24 @@ def categorize_transactions(transactions):
     return transactions
 
 def parse_instalment_purchases(transactions):
-    instalment_pattern = re.compile(r'\d{2}/\d{2}$')
-    instalment_transactions = [transaction for transaction in transactions if instalment_pattern.search(transaction['Descrição'])]
+    # Modificar a regex para capturar apenas transações parceladas com padrão YY/XX
+    instalment_pattern = re.compile(r'(.+)\s(\d{2}/\d{2})$')
+    instalment_transactions = []
+
+    for transaction in transactions:
+        match = instalment_pattern.search(transaction['Descrição'])
+        if match:
+            transaction['Descrição'] = match.group(1).strip()
+            parcela_info = match.group(2)
+            parcela_atual, total_parcelas = parcela_info.split('/')
+            transaction['Parcela Atual'] = int(parcela_atual)
+            transaction['Total Parcelas'] = int(total_parcelas)
+            instalment_transactions.append(transaction)
     
-    instalment_df = pd.DataFrame(instalment_transactions)
-    if not instalment_df.empty:
-        instalment_df[['Parcela Atual', 'Total Parcelas']] = instalment_df['Descrição'].str.extract(r'(\d{2})/(\d{2})')
-        instalment_df['Parcela Atual'] = instalment_df['Parcela Atual'].astype(int)
-        instalment_df['Total Parcelas'] = instalment_df['Total Parcelas'].astype(int)
-    
-    return instalment_df
+    return pd.DataFrame(instalment_transactions)
 
 def summarize_instalments(instalment_df):
+    # Calcular os totais para as próximas faturas
     next_installment = instalment_df[instalment_df['Parcela Atual'] == 1]['Valor'].sum()
     remaining_installments = instalment_df[instalment_df['Parcela Atual'] > 1]['Valor'].sum()
     total_future_installments = instalment_df['Valor'].sum()
